@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cDPT AI Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Anybody', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow: auto;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            padding: 20px;
+            background-color: #000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #fff;
+        }
+        h3 {
+            font-weight: normal; 
+            font-style: italic; 
+            color: #fff;
+        }
+        .chat-box {
+            max-height: 1000px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: #fff;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            width: fit-content;
+            max-width: 100%;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .chat-message.user {
+            background-color: #777;
+            align-self: flex-end;
+            margin-left: auto;
+            text-align: right;
+        }
+        .chat-message.bot {
+            background-color: #555;
+            align-self: flex-start;
+            margin-right: auto;
+            text-align: left;
+        }
+        .chat-message code {
+            background-color: #222;
+            padding: 5px;
+            border-radius: 3px;
+            display: block;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .chat-message pre code {
+            display: block;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            resize: vertical;
+            height: auto;
+            min-height: 100px;
+            background-color: #444;
+            color: #fff;
+            overflow: auto;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .button img {
+            margin-right: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        #logo {
+            max-width: 60%;
+            height: auto;
+            margin-bottom: 20px;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .typing #logo {
+            animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.5;
+            }
+        }
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="https://i.ibb.co/rsvpknc/FPS-Logo-Color-only.png" alt="Your Logo">
+        <h1>cDPT</h1>
+        <h3>The Only AI Assistant You Will Ever Need For Cardano</h3>
+        <button class="button" id="login-button" onclick="loginWithDiscord()">
+            <img src="https://i.ibb.co/89Qrp66/discord-mark-white.png" alt="Discord Logo" width="20" height="20">
+            Login with Discord
+        </button>
+        <div id="chat-container" class="hidden">
+            <div class="chat-box" id="chat-box"></div>
+            <div class="input-group">
+                <label for="message">Message</label>
+                <textarea id="message" placeholder="Enter your message here..."></textarea>
+            </div>
+            <div class="button-group">
+                <button class="button" onclick="clearChat()">Clear Chat</button>
+                <button class="button" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clientId;
+
+        async function fetchConfig() {
+            try {
+                const response = await fetch('/config');
+                const data = await response.json();
+                clientId = data.clientId;
+            } catch (error) {
+                console.error('Error fetching config:', error);
+            }
+        }
+
+        async function loginWithDiscord() {
+            if (!clientId) {
+                await fetchConfig();
+            }
+
+            const redirectUri = encodeURIComponent('https://cdpt.iagon.net/');
+            const scope = encodeURIComponent('identify applications.entitlements');
+            const responseType = 'code';
+            const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+            window.location.href = authUrl;
+        }
+
+        async function handleCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            if (code) {
+                console.log('Authorization Code:', code);
+                const tokenResponse = await fetch('http://localhost:3000/discord/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code })
+                });
+                const tokenData = await tokenResponse.json();
+                console.log('Token Data:', tokenData);
+                const accessToken = tokenData.access_token;
+
+                const entitlementsResponse = await fetch(`http://localhost:3000/discord/entitlements?accessToken=${accessToken}`);
+                const entitlements = await entitlementsResponse.json();
+                console.log('Entitlements:', entitlements);
+
+                const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
+                console.log('Has active subscription:', hasSubscription);
+
+                if (hasSubscription) {
+                    document.getElementById('login-button').classList.add('hidden');
+                    document.getElementById('chat-container').classList.remove('hidden');
+                } else {
+                    alert('This command requires a premium subscription! Upgrade now to get access to these features!');
+                    window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
+                }
+            }
+        }
+
+        async function sendMessage() {
+            const message = document.getElementById('message').value;
+            const chatBox = document.getElementById('chat-box');
+
+            if (!message) {
+                return;
+            }
+
+            addMessageToChat('user', message);
+            document.getElementById('message').value = '';
+
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'chat-message bot';
+            typingIndicator.textContent = 'Thinking...'; 
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            document.getElementById('logo').classList.add('typing');
+
+            try {
+                const response = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                chatBox.removeChild(typingIndicator);
+
+                document.getElementById('logo').classList.remove('typing');
+
+                if (response.ok) {
+                    addMessageToChat('bot', marked(data.message), true); 
+                } else {
+                    addMessageToChat('bot', `Error: ${data.error}`);
+                }
+            } catch (error) {
+                chatBox.removeChild(typingIndicator);
+
+                document.getElementById('logo').classList.remove('typing');
+
+                addMessageToChat('bot', `Error: ${error.message}`);
+            }
+        }
+
+        function addMessageToChat(sender, message, typingEffect = false) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            chatBox.appendChild(messageDiv);
+
+            if (typingEffect) {
+                typeMessage(messageDiv, message);
+            } else {
+                messageDiv.textContent = message; 
+                if (sender === 'bot' && message.includes('```')) {
+                    const codeBlocks = messageDiv.querySelectorAll('pre code');
+                    codeBlocks.forEach((codeBlock, index) => {
+                        const copyButton = document.createElement('button');
+                        copyButton.className = 'copy-button';
+                        copyButton.innerHTML = 'Copy';
+                        copyButton.onclick = () => copyToClipboard(codeBlock.innerText);
+                        codeBlock.parentElement.style.position = 'relative';
+                        codeBlock.parentElement.appendChild(copyButton);
+                    });
+                }
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight; 
+        }
+
+        function typeMessage(element, message) {
+            let index = 0;
+            const chatBox = document.getElementById('chat-box');
+            function type() {
+                if (index < message.length) {
+                    element.textContent = message.substring(0, index + 1); 
+                    index++;
+                    chatBox.scrollTop = chatBox.scrollHeight; 
+                    setTimeout(type, 1); 
+                }
+            }
+            setTimeout(type, 1);
+        }
+
+        function clearChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Copied to clipboard');
+        }
+
+        window.onload = handleCallback;
+    </script>
+</body>
+</html>
