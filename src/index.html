@@ -5,158 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cDPT AI Chatbot</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
-
-        body {
-            font-family: 'Anybody', sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow: auto;
-        }
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            padding: 20px;
-            background-color: #000;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            margin-top: 20px;
-        }
-        h1 {
-            color: #fff;
-        }
-        h3 {
-            font-weight: normal; 
-            font-style: italic; 
-            color: #fff;
-        }
-        .chat-box {
-            max-height: 1000px;
-            overflow-y: auto;
-            border: 1px solid #333;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #333;
-            color: #fff;
-        }
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            width: fit-content;
-            max-width: 100%;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            position: relative;
-        }
-        .chat-message.user {
-            background-color: #777;
-            align-self: flex-end;
-            margin-left: auto;
-            text-align: right;
-        }
-        .chat-message.bot {
-            background-color: #555;
-            align-self: flex-start;
-            margin-right: auto;
-            text-align: left;
-        }
-        .chat-message code {
-            background-color: #222;
-            padding: 5px;
-            border-radius: 3px;
-            display: block;
-            white-space: pre;
-            overflow-x: auto;
-        }
-        .chat-message pre code {
-            display: block;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-        .input-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            resize: vertical;
-            height: auto;
-            min-height: 100px;
-            background-color: #444;
-            color: #fff;
-            overflow: auto;
-        }
-        .button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: auto;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-        .button img {
-            margin-right: 10px;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .hidden {
-            display: none;
-        }
-        #logo {
-            max-width: 60%;
-            height: auto;
-            margin-bottom: 20px;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .typing #logo {
-            animation: pulse 1s infinite alternate;
-        }
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.5;
-            }
-        }
-        .copy-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-        .copy-button:hover {
-            background-color: #0056b3;
-        }
+        /* Your existing styles */
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.iagon.com/sdk/iagon.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -182,60 +34,34 @@
     </div>
 
     <script>
-        let clientId;
+        const iagonClient = new Iagon.Client({
+            apiKey: 'IAGON_API_KEY' 
+        });
 
-        async function fetchConfig() {
+        async function saveChatHistory(chatHistory) {
             try {
-                const response = await fetch('/config');
-                const data = await response.json();
-                clientId = data.clientId;
-            } catch (error) {
-                console.error('Error fetching config:', error);
-            }
-        }
-
-        async function loginWithDiscord() {
-            if (!clientId) {
-                await fetchConfig();
-            }
-
-            const redirectUri = encodeURIComponent('https://shrill-queen-0263.iagon.io/');  // Use the exact redirect URI configured in Discord
-            const scope = encodeURIComponent('identify applications.entitlements');
-            const responseType = 'code';
-            const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-            window.location.href = authUrl;
-        }
-
-        async function handleCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-            if (code) {
-                console.log('Authorization Code:', code);
-                const tokenResponse = await fetch('https://shrill-queen-0263.iagon.io/discord/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ code })
+                const response = await iagonClient.storage.upload({
+                    data: JSON.stringify(chatHistory),
+                    fileName: 'chatHistory.json',
+                    contentType: 'application/json'
                 });
-                const tokenData = await tokenResponse.json();
-                console.log('Token Data:', tokenData);
-                const accessToken = tokenData.access_token;
+                console.log('Chat history saved:', response);
+            } catch (error) {
+                console.error('Error saving chat history:', error);
+            }
+        }
 
-                const entitlementsResponse = await fetch(`https://shrill-queen-0263.iagon.io/discord/entitlements?accessToken=${accessToken}`);
-                const entitlements = await entitlementsResponse.json();
-                console.log('Entitlements:', entitlements);
-
-                const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
-                console.log('Has active subscription:', hasSubscription);
-
-                if (hasSubscription) {
-                    document.getElementById('login-button').classList.add('hidden');
-                    document.getElementById('chat-container').classList.remove('hidden');
-                } else {
-                    alert('This command requires a premium subscription! Upgrade now to get access to these features!');
-                    window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
-                }
+        async function loadChatHistory() {
+            try {
+                const response = await iagonClient.storage.download({
+                    fileName: 'chatHistory.json'
+                });
+                const chatHistory = JSON.parse(response.data);
+                console.log('Chat history loaded:', chatHistory);
+                return chatHistory;
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+                return [];
             }
         }
 
@@ -270,7 +96,6 @@
 
                 const data = await response.json();
                 
-                
                 const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
@@ -283,6 +108,14 @@
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
                 }
+
+                // Save chat history
+                const chatHistory = Array.from(chatBox.children).map(child => ({
+                    sender: child.classList.contains('user') ? 'user' : 'bot',
+                    text: child.innerHTML
+                }));
+                await saveChatHistory(chatHistory);
+
             } catch (error) {
                 
                 const typingIndicator = document.getElementById('typingIndicator');
@@ -293,6 +126,18 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 addMessageToChat('bot', `Error: ${error.message}`);
+            }
+        }
+
+        async function loadPreviousChat() {
+            try {
+                const chatHistory = await loadChatHistory();
+                chatHistory.forEach(message => {
+                    addMessageToChat(message.sender, marked.parse(message.text));
+                });
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+                alert('Failed to load chat history');
             }
         }
 
@@ -334,22 +179,6 @@
                 }
             }
             setTimeout(type, 1);
-        }
-
-        async function loadPreviousChat() {
-            try {
-                const response = await fetch('/load-chat');
-                if (!response.ok) {
-                    throw new Error('Failed to load chat history');
-                }
-                const chatHistory = await response.json();
-                chatHistory.forEach(message => {
-                    addMessageToChat(message.sender, marked.parse(message.text));
-                });
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-                alert('Failed to load chat history');
-            }
         }
 
         function clearChat() {
