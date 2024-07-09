@@ -199,7 +199,7 @@
                 await fetchConfig();
             }
 
-            const redirectUri = encodeURIComponent('https://cool-grass-2491.iagon.io/');  // Use the exact redirect URI configured in Discord
+            const redirectUri = encodeURIComponent('https://cool-grass-2491.iagon.io/'); 
             const scope = encodeURIComponent('identify applications.entitlements');
             const responseType = 'code';
             const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
@@ -222,7 +222,6 @@
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
 
-                // Save access token to localStorage
                 localStorage.setItem('accessToken', accessToken);
 
                 const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${accessToken}`);
@@ -240,7 +239,6 @@
                     window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
                 }
             } else {
-                // Check if access token is stored in localStorage
                 const storedAccessToken = localStorage.getItem('accessToken');
                 if (storedAccessToken) {
                     const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
@@ -301,7 +299,6 @@
                     addMessageToChat('bot', `Error: ${data.error}`);
                 }
 
-                // Save chat history
                 const chatHistory = Array.from(chatBox.children).map(child => ({
                     sender: child.classList.contains('user') ? 'user' : 'bot',
                     text: child.innerHTML
@@ -331,9 +328,12 @@
             try {
                 const response = await fetch('/load-chat');
                 if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to load chat history:', errorData);
                     throw new Error('Failed to load chat history');
                 }
                 const chatHistory = await response.json();
+                console.log('Loaded chat history:', chatHistory);
                 chatHistory.forEach(message => {
                     addMessageToChat(message.sender, marked.parse(message.text));
                 });

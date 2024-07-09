@@ -99,7 +99,6 @@ app.get('/discord/entitlements', async (req, res) => {
     }
 });
 
-// Endpoint to save chat history
 app.post('/save-chat', async (req, res) => {
     try {
         const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
@@ -109,7 +108,7 @@ app.post('/save-chat', async (req, res) => {
                 'Authorization': `Bearer ${IAGON_API_KEY}`
             },
             body: JSON.stringify({
-                data: JSON.stringify(req.body.chatHistory),
+                data: Buffer.from(JSON.stringify(req.body.chatHistory)).toString('base64'),
                 fileName: 'chatHistory.json',
                 contentType: 'application/json'
             })
@@ -127,7 +126,6 @@ app.post('/save-chat', async (req, res) => {
     }
 });
 
-// Endpoint to load chat history
 app.get('/load-chat', async (req, res) => {
     try {
         const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
@@ -146,7 +144,7 @@ app.get('/load-chat', async (req, res) => {
             return res.status(response.status).json(data);
         }
 
-        const chatHistory = JSON.parse(data.data);
+        const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
         res.json(chatHistory);
     } catch (error) {
         console.error('Error loading chat history:', error);
