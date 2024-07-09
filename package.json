@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "npm run clean && npm run copy",
-    "clean": "rm -rf dist",
-    "copy": "copyfiles -u 1 src/**/* dist"
+    "build": "node build.js"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +16,5 @@
     "dotenv": "^16.0.0",
     "express": "^4.19.2",
     "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
-    "copyfiles": "^2.4.1",
-    "rimraf": "^3.0.2"
   }
 }
