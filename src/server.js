@@ -16,11 +16,11 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, '../dist')));
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const IAGON_API_KEY = process.env.IAGON_API_KEY;
 
 app.get('/config', (req, res) => {
     res.json({
@@ -96,6 +96,61 @@ app.get('/discord/entitlements', async (req, res) => {
     } catch (error) {
         console.error('Failed to fetch entitlements:', error);
         res.status(500).json({ error: 'Failed to fetch entitlements' });
+    }
+});
+
+// Endpoint to save chat history
+app.post('/save-chat', async (req, res) => {
+    try {
+        const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${IAGON_API_KEY}`
+            },
+            body: JSON.stringify({
+                data: JSON.stringify(req.body.chatHistory),
+                fileName: 'chatHistory.json',
+                contentType: 'application/json'
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            return res.status(response.status).json(data);
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error saving chat history:', error);
+        res.status(500).json({ error: 'Failed to save chat history' });
+    }
+});
+
+// Endpoint to load chat history
+app.get('/load-chat', async (req, res) => {
+    try {
+        const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${IAGON_API_KEY}`
+            },
+            body: JSON.stringify({
+                fileName: 'chatHistory.json'
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            return res.status(response.status).json(data);
+        }
+
+        const chatHistory = JSON.parse(data.data);
+        res.json(chatHistory);
+    } catch (error) {
+        console.error('Error loading chat history:', error);
+        res.status(500).json({ error: 'Failed to load chat history' });
     }
 });
 

@@ -157,7 +157,6 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.iagon.com/sdk/iagon.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -183,37 +182,6 @@
     </div>
 
     <script>
-        const iagonClient = new Iagon.Client({
-            apiKey: 'IAGON_API_KEY'
-        });
-
-        async function saveChatHistory(chatHistory) {
-            try {
-                const response = await iagonClient.storage.upload({
-                    data: JSON.stringify(chatHistory),
-                    fileName: 'chatHistory.json',
-                    contentType: 'application/json'
-                });
-                console.log('Chat history saved:', response);
-            } catch (error) {
-                console.error('Error saving chat history:', error);
-            }
-        }
-
-        async function loadChatHistory() {
-            try {
-                const response = await iagonClient.storage.download({
-                    fileName: 'chatHistory.json'
-                });
-                const chatHistory = JSON.parse(response.data);
-                console.log('Chat history loaded:', chatHistory);
-                return chatHistory;
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-                return [];
-            }
-        }
-
         let clientId;
 
         async function fetchConfig() {
@@ -320,7 +288,13 @@
                     sender: child.classList.contains('user') ? 'user' : 'bot',
                     text: child.innerHTML
                 }));
-                await saveChatHistory(chatHistory);
+                await fetch('/save-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ chatHistory })
+                });
 
             } catch (error) {
                 
@@ -337,7 +311,11 @@
 
         async function loadPreviousChat() {
             try {
-                const chatHistory = await loadChatHistory();
+                const response = await fetch('/load-chat');
+                if (!response.ok) {
+                    throw new Error('Failed to load chat history');
+                }
+                const chatHistory = await response.json();
                 chatHistory.forEach(message => {
                     addMessageToChat(message.sender, marked.parse(message.text));
                 });
