@@ -222,6 +222,9 @@
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
 
+                // Save access token to localStorage
+                localStorage.setItem('accessToken', accessToken);
+
                 const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
                 console.log('Entitlements:', entitlements);
@@ -235,6 +238,21 @@
                 } else {
                     alert('This command requires a premium subscription! Upgrade now to get access to these features!');
                     window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
+                }
+            } else {
+                // Check if access token is stored in localStorage
+                const storedAccessToken = localStorage.getItem('accessToken');
+                if (storedAccessToken) {
+                    const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
+                    const entitlements = await entitlementsResponse.json();
+                    const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
+                    if (hasSubscription) {
+                        document.getElementById('login-button').classList.add('hidden');
+                        document.getElementById('chat-container').classList.remove('hidden');
+                    } else {
+                        alert('This command requires a premium subscription! Upgrade now to get access to these features!');
+                        window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
+                    }
                 }
             }
         }
