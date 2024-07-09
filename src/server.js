@@ -34,7 +34,7 @@ app.post('/discord/token', async (req, res) => {
         client_secret: CLIENT_SECRET,
         grant_type: 'authorization_code',
         code: req.body.code,
-        redirect_uri: 'http://shrill-queen-0263.iagon.io/',
+        redirect_uri: 'https://shrill-queen-0263.iagon.io/',
     });
 
     console.log('Requesting token with params:', params.toString());
@@ -100,5 +100,5 @@ app.get('/discord/entitlements', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at https://localhost:${port}`);
 });
