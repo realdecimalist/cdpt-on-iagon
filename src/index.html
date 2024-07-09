@@ -256,73 +256,73 @@
         }
 
         async function sendMessage() {
-            const message = document.getElementById('message').value;
-            const chatBox = document.getElementById('chat-box');
+        const message = document.getElementById('message').value;
+        const chatBox = document.getElementById('chat-box');
 
-            if (!message) {
-                return;
-            }
-
-            addMessageToChat('user', message);
-            document.getElementById('message').value = '';
-
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'chat-message bot';
-            typingIndicator.textContent = 'Thinking...'; 
-            typingIndicator.id = 'typingIndicator'; 
-            chatBox.appendChild(typingIndicator);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            document.getElementById('logo').classList.add('typing');
-
-            try {
-                const response = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message })
-                });
-
-                const data = await response.json();
-                
-                const typingIndicator = document.getElementById('typingIndicator');
-                if (typingIndicator) {
-                    chatBox.removeChild(typingIndicator);
-                }
-
-                document.getElementById('logo').classList.remove('typing');
-
-                if (response.ok) {
-                    addMessageToChat('bot', marked.parse(data.message), true); 
-                } else {
-                    addMessageToChat('bot', `Error: ${data.error}`);
-                }
-
-                const chatHistory = Array.from(chatBox.children).map(child => ({
-                    sender: child.classList.contains('user') ? 'user' : 'bot',
-                    text: child.innerHTML
-                }));
-                await fetch('/save-chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ chatHistory })
-                });
-
-            } catch (error) {
-                
-                const typingIndicator = document.getElementById('typingIndicator');
-                if (typingIndicator) {
-                    chatBox.removeChild(typingIndicator);
-                }
-
-                document.getElementById('logo').classList.remove('typing');
-
-                addMessageToChat('bot', `Error: ${error.message}`);
-            }
+        if (!message) {
+            return;
         }
+
+        addMessageToChat('user', message);
+        document.getElementById('message').value = '';
+
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'chat-message bot';
+        typingIndicator.textContent = 'Thinking...'; 
+        typingIndicator.id = 'typingIndicator'; 
+        chatBox.appendChild(typingIndicator);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        document.getElementById('logo').classList.add('typing');
+
+        try {
+            const response = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                chatBox.removeChild(typingIndicator);
+            }
+
+            document.getElementById('logo').classList.remove('typing');
+
+            if (response.ok) {
+                addMessageToChat('bot', marked.parse(data.message), true); 
+            } else {
+                addMessageToChat('bot', `Error: ${data.error}`);
+            }
+
+            const chatHistory = Array.from(chatBox.children).map(child => ({
+                sender: child.classList.contains('user') ? 'user' : 'bot',
+                text: child.innerHTML
+            }));
+            await fetch('/save-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ chatHistory })
+            });
+
+        } catch (error) {
+            
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                chatBox.removeChild(typingIndicator);
+            }
+
+            document.getElementById('logo').classList.remove('typing');
+
+            addMessageToChat('bot', `Error: ${error.message}`);
+        }
+    }
 
         async function loadPreviousChat() {
             try {
