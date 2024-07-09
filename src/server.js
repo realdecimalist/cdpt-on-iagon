@@ -34,7 +34,7 @@ app.post('/discord/token', async (req, res) => {
         client_secret: CLIENT_SECRET,
         grant_type: 'authorization_code',
         code: req.body.code,
-        redirect_uri: 'https://cdpt.iagon.net/',
+        redirect_uri: 'http://shrill-queen-0263.iagon.io/',
     });
 
     console.log('Requesting token with params:', params.toString());
