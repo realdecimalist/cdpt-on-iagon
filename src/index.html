@@ -176,6 +176,7 @@
             <div class="button-group">
                 <button class="button" onclick="clearChat()">Clear Chat</button>
                 <button class="button" onclick="sendMessage()">Send Message</button>
+                <button class="button" onclick="loadPreviousChat()">Load Previous Chat</button>
             </div>
         </div>
     </div>
@@ -252,7 +253,7 @@
             const typingIndicator = document.createElement('div');
             typingIndicator.className = 'chat-message bot';
             typingIndicator.textContent = 'Thinking...'; 
-            typingIndicator.id = 'typingIndicator'; // Add an ID to the typing indicator for easy removal
+            typingIndicator.id = 'typingIndicator'; 
             chatBox.appendChild(typingIndicator);
             chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -269,7 +270,7 @@
 
                 const data = await response.json();
                 
-                // Ensure the typing indicator exists before trying to remove it
+                
                 const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
@@ -278,12 +279,12 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
-                    addMessageToChat('bot', marked.parse(data.message), true); // Use marked.parse to convert markdown to HTML
+                    addMessageToChat('bot', marked.parse(data.message), true); 
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
                 }
             } catch (error) {
-                // Ensure the typing indicator exists before trying to remove it
+                
                 const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
@@ -304,7 +305,7 @@
             if (typingEffect) {
                 typeMessage(messageDiv, message);
             } else {
-                messageDiv.innerHTML = message; // Use innerHTML to parse markdown
+                messageDiv.innerHTML = message; 
                 if (sender === 'bot' && message.includes('```')) {
                     const codeBlocks = messageDiv.querySelectorAll('pre code');
                     codeBlocks.forEach((codeBlock, index) => {
@@ -326,13 +327,29 @@
             const chatBox = document.getElementById('chat-box');
             function type() {
                 if (index < message.length) {
-                    element.textContent = message.substring(0, index + 1); 
+                    element.innerHTML = marked.parse(message.substring(0, index + 1)); 
                     index++;
                     chatBox.scrollTop = chatBox.scrollHeight; 
                     setTimeout(type, 1); 
                 }
             }
             setTimeout(type, 1);
+        }
+
+        async function loadPreviousChat() {
+            try {
+                const response = await fetch('/load-chat');
+                if (!response.ok) {
+                    throw new Error('Failed to load chat history');
+                }
+                const chatHistory = await response.json();
+                chatHistory.forEach(message => {
+                    addMessageToChat(message.sender, marked.parse(message.text));
+                });
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+                alert('Failed to load chat history');
+            }
         }
 
         function clearChat() {
