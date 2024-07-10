@@ -36,7 +36,7 @@ app.post('/discord/token', async (req, res) => {
         client_secret: CLIENT_SECRET,
         grant_type: 'authorization_code',
         code: req.body.code,
-        redirect_uri: 'https://cool-grass-2491.iagon.io/',
+        redirect_uri: 'https://black-math-6698.iagon.io/',
     });
 
     console.log('Requesting token with params:', params.toString());
