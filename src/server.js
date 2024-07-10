@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import FormData from 'form-data';
-import marked from 'marked'; 
+import { marked } from 'marked';
 
 dotenv.config();
 
