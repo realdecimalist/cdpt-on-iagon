@@ -259,15 +259,26 @@
             }
         }
 
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         async function sendMessage() {
             console.log('Send message button clicked.');
-            const message = document.getElementById('message').value;
+            let message = document.getElementById('message').value;
             const chatBox = document.getElementById('chat-box');
 
             if (!message) {
                 console.log('Message is empty, not sending.');
                 return;
             }
+
+            message = escapeHtml(message); // Escape HTML characters
 
             addMessageToChat('user', message);
             document.getElementById('message').value = ''; // Clear the message field
