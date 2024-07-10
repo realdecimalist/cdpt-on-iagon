@@ -327,7 +327,7 @@
 
                 const data = await response.json();
 
-                if (typingIndicator) {
+                if (typingIndicator && typingIndicator.parentNode === chatBox) {
                     chatBox.removeChild(typingIndicator);
                     console.log('Removed typing indicator.');
                 }
@@ -363,7 +363,7 @@
                 }
 
             } catch (error) {
-                if (typingIndicator) {
+                if (typingIndicator && typingIndicator.parentNode === chatBox) {
                     chatBox.removeChild(typingIndicator);
                     console.log('Removed typing indicator.');
                 }
@@ -374,6 +374,7 @@
                 console.error('Error sending message:', error.message);
             }
         }
+
 
 
         document.getElementById('message').addEventListener('keypress', function (event) {
