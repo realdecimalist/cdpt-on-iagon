@@ -113,6 +113,7 @@ app.post('/save-chat', async (req, res) => {
         formData.append('file', Buffer.from(JSON.stringify(chatHistory)), `${discordId}_chatHistory.json`);
         formData.append('filename', `${discordId}_chatHistory.json`);
         formData.append('visibility', 'private');
+        formData.append('password', discordId); // Use discordId as the password
 
         console.log('Saving chat history for Discord ID:', discordId);
 
@@ -148,6 +149,7 @@ app.get('/load-chat', async (req, res) => {
 
         const formData = new FormData();
         formData.append('id', `${discordId}_chatHistory.json`);
+        formData.append('password', discordId); // Use discordId as the password
 
         console.log('Loading chat history for Discord ID:', discordId);
 

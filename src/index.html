@@ -224,9 +224,10 @@
                 const tokenData = await tokenResponse.json();
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
+                discordId = tokenData.discord_id; // Capture discordId here
 
                 localStorage.setItem('accessToken', accessToken);
-                discordId = tokenData.discord_id; 
+                localStorage.setItem('discordId', discordId); // Store discordId
 
                 const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
@@ -244,6 +245,7 @@
                 }
             } else {
                 const storedAccessToken = localStorage.getItem('accessToken');
+                discordId = localStorage.getItem('discordId'); // Retrieve discordId from storage
                 if (storedAccessToken) {
                     const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
