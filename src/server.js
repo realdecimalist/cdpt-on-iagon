@@ -101,17 +101,19 @@ app.get('/discord/entitlements', async (req, res) => {
 
 app.post('/save-chat', async (req, res) => {
     try {
+        const { discordId, chatHistory } = req.body;
+
+        const formData = new FormData();
+        formData.append('file', new Blob([JSON.stringify(chatHistory)], { type: 'application/json' }), `${discordId}_chatHistory.json`);
+        formData.append('filename', `${discordId}_chatHistory.json`);
+        formData.append('visibility', 'private');
+
         const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${IAGON_API_KEY}`
+                'x-api-key': IAGON_API_KEY
             },
-            body: JSON.stringify({
-                data: Buffer.from(JSON.stringify(req.body.chatHistory)).toString('base64'),
-                fileName: 'chatHistory.json',
-                contentType: 'application/json'
-            })
+            body: formData
         });
 
         const data = await response.json();
@@ -128,15 +130,17 @@ app.post('/save-chat', async (req, res) => {
 
 app.get('/load-chat', async (req, res) => {
     try {
+        const { discordId } = req.query;
+
+        const formData = new FormData();
+        formData.append('id', `${discordId}_chatHistory.json`);
+
         const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${IAGON_API_KEY}`
+                'x-api-key': IAGON_API_KEY
             },
-            body: JSON.stringify({
-                fileName: 'chatHistory.json'
-            })
+            body: formData
         });
 
         const data = await response.json();

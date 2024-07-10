@@ -183,6 +183,7 @@
 
     <script>
         let clientId;
+        let discordId;
 
         async function fetchConfig() {
             try {
@@ -234,6 +235,7 @@
                 if (hasSubscription) {
                     document.getElementById('login-button').classList.add('hidden');
                     document.getElementById('chat-container').classList.remove('hidden');
+                    discordId = tokenData.discord_id; // Assume this field is available in tokenData
                 } else {
                     alert('This command requires a premium subscription! Upgrade now to get access to these features!');
                     window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
@@ -311,7 +313,7 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ chatHistory })
+                        body: JSON.stringify({ discordId, chatHistory })
                     });
                 } catch (saveError) {
                     console.error('Failed to save chat history:', saveError);
@@ -330,7 +332,6 @@
             }
         }
 
-        // Event listener to the textarea to handle "Enter" key press for sending message
         document.getElementById('message').addEventListener('keypress', function (event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -338,10 +339,9 @@
             }
         });
 
-
         async function loadPreviousChat() {
             try {
-                const response = await fetch('/load-chat');
+                const response = await fetch(`/load-chat?discordId=${discordId}`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to load chat history:', errorData);
