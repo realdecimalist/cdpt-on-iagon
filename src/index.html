@@ -304,13 +304,19 @@
                     sender: child.classList.contains('user') ? 'user' : 'bot',
                     text: child.innerHTML
                 }));
-                await fetch('/save-chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ chatHistory })
-                });
+
+                try {
+                    await fetch('/save-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ chatHistory })
+                    });
+                } catch (saveError) {
+                    console.error('Failed to save chat history:', saveError);
+                    addMessageToChat('bot', 'Warning: Failed to save chat history. You can continue chatting, but the conversation will not be saved.');
+                }
 
             } catch (error) {
                 const typingIndicator = document.getElementById('typingIndicator');
@@ -324,7 +330,7 @@
             }
         }
 
-        // Add event listener to the textarea to handle "Enter" key press for sending message
+        // Event listener to the textarea to handle "Enter" key press for sending message
         document.getElementById('message').addEventListener('keypress', function (event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
