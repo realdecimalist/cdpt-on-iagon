@@ -184,6 +184,7 @@
     <script>
         let clientId;
         let discordId;
+        let threadId; // Add a variable to store the thread ID
 
         async function fetchConfig() {
             try {
@@ -264,9 +265,9 @@
         function escapeHtml(unsafe) {
             return unsafe
                 .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
+                .replace(/<//g, "&lt;")
                 .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
+                .replace(/"//g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
 
@@ -298,12 +299,28 @@
             document.getElementById('logo').classList.add('typing');
 
             try {
+                // Check if threadId exists in local storage
+                threadId = localStorage.getItem('threadId');
+                if (!threadId) {
+                    // Create a new thread if it doesn't exist
+                    const threadResponse = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/create-thread', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message })
+                    });
+                    const threadData = await threadResponse.json();
+                    threadId = threadData.threadId;
+                    localStorage.setItem('threadId', threadId); // Store the new threadId in local storage
+                }
+
                 const response = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ message, threadId }) // Send the threadId with the message
                 });
 
                 const data = await response.json();
@@ -428,6 +445,7 @@
             console.log('Clear chat button clicked.');
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
+            localStorage.removeItem('threadId'); // Clear the threadId from local storage
             console.log('Chat cleared.');
         }
 
