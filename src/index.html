@@ -226,7 +226,7 @@
                 const accessToken = tokenData.access_token;
 
                 localStorage.setItem('accessToken', accessToken);
-                discordId = tokenData.discord_id; // Assume this field is available in tokenData
+                discordId = tokenData.discord_id; 
 
                 const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
@@ -271,7 +271,6 @@
         async function sendMessage() {
             console.log('Send message button clicked.');
             let message = document.getElementById('message').value;
-            const chatBox = document.getElementById('chat-box');
 
             if (!message) {
                 console.log('Message is empty, not sending.');
@@ -280,6 +279,7 @@
 
             message = escapeHtml(message); // Escape HTML characters
 
+            const chatBox = document.getElementById('chat-box');
             addMessageToChat('user', message);
             document.getElementById('message').value = ''; // Clear the message field
             document.getElementById('message').focus(); // Focus the message field
@@ -306,7 +306,6 @@
 
                 const data = await response.json();
 
-                const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
                     console.log('Removed typing indicator.');
@@ -342,7 +341,6 @@
                 }
 
             } catch (error) {
-                const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
                     console.log('Removed typing indicator.');

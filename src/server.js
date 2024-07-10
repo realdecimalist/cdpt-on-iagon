@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import FormData from 'form-data'; // Add FormData polyfill for Node.js
 
 dotenv.config();
 
@@ -104,8 +105,12 @@ app.post('/save-chat', async (req, res) => {
     try {
         const { discordId, chatHistory } = req.body;
 
+        if (!discordId || !chatHistory) {
+            return res.status(400).json({ error: 'discordId and chatHistory are required' });
+        }
+
         const formData = new FormData();
-        formData.append('file', new Blob([JSON.stringify(chatHistory)], { type: 'application/json' }), `${discordId}_chatHistory.json`);
+        formData.append('file', Buffer.from(JSON.stringify(chatHistory)), `${discordId}_chatHistory.json`);
         formData.append('filename', `${discordId}_chatHistory.json`);
         formData.append('visibility', 'private');
 
@@ -136,6 +141,10 @@ app.post('/save-chat', async (req, res) => {
 app.get('/load-chat', async (req, res) => {
     try {
         const { discordId } = req.query;
+
+        if (!discordId) {
+            return res.status(400).json({ error: 'discordId is required' });
+        }
 
         const formData = new FormData();
         formData.append('id', `${discordId}_chatHistory.json`);
