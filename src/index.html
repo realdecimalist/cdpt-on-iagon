@@ -156,7 +156,6 @@
             background-color: #0056b3;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -271,7 +270,6 @@
                 .replace(/'/g, "&#039;");
         }
 
-
         async function sendMessage() {
             console.log('Send message button clicked.');
             let message = document.getElementById('message').value;
@@ -335,9 +333,9 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
-                    // Use marked to parse the Markdown response to HTML
-                    addMessageToChat('bot', marked(data.message), true);
-                    console.log('Bot response received:', data.message);
+                    // Use server-side processed HTML content
+                    addMessageToChat('bot', data.htmlContent, true);
+                    console.log('Bot response received:', data.htmlContent);
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
                     console.error('Bot response error:', data.error);
@@ -375,8 +373,6 @@
             }
         }
 
-
-
         document.getElementById('message').addEventListener('keypress', function (event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -395,9 +391,17 @@
                 }
                 const chatHistory = await response.json();
                 console.log('Loaded chat history:', chatHistory);
-                chatHistory.forEach(message => {
-                    addMessageToChat(message.sender, marked.parse(message.text));
-                });
+                for (const message of chatHistory) {
+                    const htmlContentResponse = await fetch('/process-markdown', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ markdownText: message.text })
+                    });
+                    const htmlContentData = await htmlContentResponse.json();
+                    addMessageToChat(message.sender, htmlContentData.htmlContent);
+                }
             } catch (error) {
                 console.error('Error loading chat history:', error);
                 alert('Failed to load chat history');
@@ -432,13 +436,12 @@
             console.log('Added message to chat:', { sender, message });
         }
 
-
         function typeMessage(element, message) {
             let index = 0;
             const chatBox = document.getElementById('chat-box');
             function type() {
                 if (index < message.length) {
-                    element.innerHTML = marked.parse(message.substring(0, index + 1)); 
+                    element.innerHTML = message.substring(0, index + 1); 
                     index++;
                     chatBox.scrollTop = chatBox.scrollHeight; 
                     setTimeout(type, 1); 

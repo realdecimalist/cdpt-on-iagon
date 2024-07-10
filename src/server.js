@@ -4,7 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import FormData from 'form-data'; // Add FormData polyfill for Node.js
+import FormData from 'form-data';
+import marked from 'marked'; 
 
 dotenv.config();
 
@@ -174,6 +175,12 @@ app.get('/load-chat', async (req, res) => {
         console.error('Error loading chat history:', error);
         res.status(500).json({ error: 'Failed to load chat history' });
     }
+});
+
+app.post('/process-markdown', (req, res) => {
+    const { markdownText } = req.body;
+    const htmlContent = marked(markdownText);
+    res.json({ htmlContent });
 });
 
 app.listen(port, () => {
