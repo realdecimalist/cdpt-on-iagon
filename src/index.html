@@ -156,6 +156,7 @@
             background-color: #0056b3;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -183,7 +184,7 @@
     <script>
         let clientId;
         let discordId;
-        let threadId; // Add a variable to store the thread ID
+        let threadId;
 
         async function fetchConfig() {
             try {
@@ -224,10 +225,10 @@
                 const tokenData = await tokenResponse.json();
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
-                discordId = tokenData.discord_id; // Capture discordId here
+                discordId = tokenData.discord_id;
 
                 localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('discordId', discordId); // Store discordId
+                localStorage.setItem('discordId', discordId);
 
                 const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
@@ -245,7 +246,7 @@
                 }
             } else {
                 const storedAccessToken = localStorage.getItem('accessToken');
-                discordId = localStorage.getItem('discordId'); // Retrieve discordId from storage
+                discordId = localStorage.getItem('discordId');
                 if (storedAccessToken) {
                     const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
@@ -303,7 +304,7 @@
                 threadId = localStorage.getItem('threadId');
                 if (!threadId) {
                     // Create a new thread if it doesn't exist
-                    const threadResponse = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/create-thread', {
+                    const threadResponse = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -333,9 +334,9 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
-                    // Use server-side processed HTML content
-                    addMessageToChat('bot', data.htmlContent, true);
-                    console.log('Bot response received:', data.htmlContent);
+                    // Use marked to parse the Markdown response to HTML
+                    addMessageToChat('bot', marked(data.message), true);
+                    console.log('Bot response received:', data.message);
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
                     console.error('Bot response error:', data.error);
@@ -391,6 +392,7 @@
                 }
                 const chatHistory = await response.json();
                 console.log('Loaded chat history:', chatHistory);
+
                 for (const message of chatHistory) {
                     const htmlContentResponse = await fetch('/process-markdown', {
                         method: 'POST',
@@ -441,7 +443,7 @@
             const chatBox = document.getElementById('chat-box');
             function type() {
                 if (index < message.length) {
-                    element.innerHTML = message.substring(0, index + 1); 
+                    element.innerHTML = marked.parse(message.substring(0, index + 1)); 
                     index++;
                     chatBox.scrollTop = chatBox.scrollHeight; 
                     setTimeout(type, 1); 
