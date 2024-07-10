@@ -333,8 +333,17 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
-                    // Use marked to parse the Markdown response to HTML
-                    addMessageToChat('bot', marked(data.message), true);
+                    // Send the received message to the server for Markdown processing
+                    const htmlContentResponse = await fetch('/process-markdown', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ markdownText: data.message })
+                    });
+                    const htmlContentData = await htmlContentResponse.json();
+
+                    addMessageToChat('bot', htmlContentData.htmlContent);
                     console.log('Bot response received:', data.message);
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
@@ -442,7 +451,7 @@
             const chatBox = document.getElementById('chat-box');
             function type() {
                 if (index < message.length) {
-                    element.innerHTML = marked.parse(message.substring(0, index + 1)); 
+                    element.innerHTML = message.substring(0, index + 1);
                     index++;
                     chatBox.scrollTop = chatBox.scrollHeight; 
                     setTimeout(type, 1); 
