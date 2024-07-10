@@ -280,7 +280,8 @@
                 return;
             }
 
-            message = escapeHtml(message); // Escape HTML characters
+            // Escape HTML characters in user input
+            message = escapeHtml(message);
 
             const chatBox = document.getElementById('chat-box');
             addMessageToChat('user', message);
@@ -333,7 +334,8 @@
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
-                    addMessageToChat('bot', marked.parse(data.message), true);
+                    // Use marked to parse the Markdown response to HTML
+                    addMessageToChat('bot', marked(data.message), true);
                     console.log('Bot response received:', data.message);
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
@@ -372,6 +374,7 @@
             }
         }
 
+
         document.getElementById('message').addEventListener('keypress', function (event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -408,7 +411,8 @@
             if (typingEffect) {
                 typeMessage(messageDiv, message);
             } else {
-                messageDiv.innerHTML = message; 
+                // Use innerHTML to correctly display HTML content
+                messageDiv.innerHTML = message;
                 if (sender === 'bot' && message.includes('```')) {
                     const codeBlocks = messageDiv.querySelectorAll('pre code');
                     codeBlocks.forEach((codeBlock, index) => {
@@ -425,6 +429,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
             console.log('Added message to chat:', { sender, message });
         }
+
 
         function typeMessage(element, message) {
             let index = 0;
