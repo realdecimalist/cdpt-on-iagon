@@ -190,6 +190,7 @@
                 const response = await fetch('/config');
                 const data = await response.json();
                 clientId = data.clientId;
+                console.log('Fetched config:', data);
             } catch (error) {
                 console.error('Error fetching config:', error);
             }
@@ -204,6 +205,7 @@
             const scope = encodeURIComponent('identify applications.entitlements');
             const responseType = 'code';
             const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+            console.log('Redirecting to Discord auth URL:', authUrl);
             window.location.href = authUrl;
         }
 
@@ -224,6 +226,7 @@
                 const accessToken = tokenData.access_token;
 
                 localStorage.setItem('accessToken', accessToken);
+                discordId = tokenData.discord_id; // Assume this field is available in tokenData
 
                 const entitlementsResponse = await fetch(`https://cool-grass-2491.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
@@ -235,7 +238,6 @@
                 if (hasSubscription) {
                     document.getElementById('login-button').classList.add('hidden');
                     document.getElementById('chat-container').classList.remove('hidden');
-                    discordId = tokenData.discord_id; // Assume this field is available in tokenData
                 } else {
                     alert('This command requires a premium subscription! Upgrade now to get access to these features!');
                     window.location.href = 'https://discord.com/application-directory/1254680166664507413/store';
@@ -258,16 +260,19 @@
         }
 
         async function sendMessage() {
+            console.log('Send message button clicked.');
             const message = document.getElementById('message').value;
             const chatBox = document.getElementById('chat-box');
 
             if (!message) {
+                console.log('Message is empty, not sending.');
                 return;
             }
 
             addMessageToChat('user', message);
             document.getElementById('message').value = ''; // Clear the message field
             document.getElementById('message').focus(); // Focus the message field
+            console.log('Message field cleared and focused.');
 
             const typingIndicator = document.createElement('div');
             typingIndicator.className = 'chat-message bot';
@@ -275,6 +280,7 @@
             typingIndicator.id = 'typingIndicator';
             chatBox.appendChild(typingIndicator);
             chatBox.scrollTop = chatBox.scrollHeight;
+            console.log('Added typing indicator.');
 
             document.getElementById('logo').classList.add('typing');
 
@@ -292,14 +298,17 @@
                 const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
+                    console.log('Removed typing indicator.');
                 }
 
                 document.getElementById('logo').classList.remove('typing');
 
                 if (response.ok) {
                     addMessageToChat('bot', marked.parse(data.message), true);
+                    console.log('Bot response received:', data.message);
                 } else {
                     addMessageToChat('bot', `Error: ${data.error}`);
+                    console.error('Bot response error:', data.error);
                 }
 
                 const chatHistory = Array.from(chatBox.children).map(child => ({
@@ -315,6 +324,7 @@
                         },
                         body: JSON.stringify({ discordId, chatHistory })
                     });
+                    console.log('Chat history saved.');
                 } catch (saveError) {
                     console.error('Failed to save chat history:', saveError);
                     addMessageToChat('bot', 'Warning: Failed to save chat history. You can continue chatting, but the conversation will not be saved.');
@@ -324,11 +334,13 @@
                 const typingIndicator = document.getElementById('typingIndicator');
                 if (typingIndicator) {
                     chatBox.removeChild(typingIndicator);
+                    console.log('Removed typing indicator.');
                 }
 
                 document.getElementById('logo').classList.remove('typing');
 
                 addMessageToChat('bot', `Error: ${error.message}`);
+                console.error('Error sending message:', error.message);
             }
         }
 
@@ -340,6 +352,7 @@
         });
 
         async function loadPreviousChat() {
+            console.log('Load previous chat button clicked.');
             try {
                 const response = await fetch(`/load-chat?discordId=${discordId}`);
                 if (!response.ok) {
@@ -381,7 +394,8 @@
                 }
             }
 
-            chatBox.scrollTop = chatBox.scrollHeight; 
+            chatBox.scrollTop = chatBox.scrollHeight;
+            console.log('Added message to chat:', { sender, message });
         }
 
         function typeMessage(element, message) {
@@ -396,11 +410,14 @@
                 }
             }
             setTimeout(type, 1);
+            console.log('Started typing effect for message:', message);
         }
 
         function clearChat() {
+            console.log('Clear chat button clicked.');
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
+            console.log('Chat cleared.');
         }
 
         function copyToClipboard(text) {
@@ -411,6 +428,7 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
             alert('Copied to clipboard');
+            console.log('Copied to clipboard:', text);
         }
 
         window.onload = handleCallback;

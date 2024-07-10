@@ -26,6 +26,7 @@ app.get('/config', (req, res) => {
     res.json({
         clientId: CLIENT_ID
     });
+    console.log('Sent config:', { clientId: CLIENT_ID });
 });
 
 app.post('/discord/token', async (req, res) => {
@@ -108,6 +109,8 @@ app.post('/save-chat', async (req, res) => {
         formData.append('filename', `${discordId}_chatHistory.json`);
         formData.append('visibility', 'private');
 
+        console.log('Saving chat history for Discord ID:', discordId);
+
         const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
             method: 'POST',
             headers: {
@@ -118,9 +121,11 @@ app.post('/save-chat', async (req, res) => {
 
         const data = await response.json();
         if (!response.ok) {
+            console.error('Failed to save chat history:', data);
             return res.status(response.status).json(data);
         }
 
+        console.log('Chat history saved:', data);
         res.json(data);
     } catch (error) {
         console.error('Error saving chat history:', error);
@@ -135,6 +140,8 @@ app.get('/load-chat', async (req, res) => {
         const formData = new FormData();
         formData.append('id', `${discordId}_chatHistory.json`);
 
+        console.log('Loading chat history for Discord ID:', discordId);
+
         const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
             method: 'POST',
             headers: {
@@ -145,10 +152,12 @@ app.get('/load-chat', async (req, res) => {
 
         const data = await response.json();
         if (!response.ok) {
+            console.error('Failed to load chat history:', data);
             return res.status(response.status).json(data);
         }
 
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
+        console.log('Loaded chat history:', chatHistory);
         res.json(chatHistory);
     } catch (error) {
         console.error('Error loading chat history:', error);
