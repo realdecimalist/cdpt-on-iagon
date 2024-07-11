@@ -224,15 +224,20 @@
                 const tokenData = await tokenResponse.json();
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
-                discordId = tokenData.discord_id;
 
                 localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('discordId', discordId);
-                console.log('Saved discordId to localStorage:', discordId);
 
                 const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
                 console.log('Entitlements:', entitlements);
+
+                if (entitlements && Array.isArray(entitlements) && entitlements.length > 0) {
+                    discordId = entitlements[0].user_id;
+                    localStorage.setItem('discordId', discordId);
+                    console.log('Saved discordId to localStorage:', discordId);
+                } else {
+                    console.error('No entitlements found or entitlements format is incorrect.');
+                }
 
                 const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
                 console.log('Has active subscription:', hasSubscription);
