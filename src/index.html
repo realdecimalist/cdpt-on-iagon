@@ -248,7 +248,9 @@
                 const storedAccessToken = localStorage.getItem('accessToken');
                 discordId = localStorage.getItem('discordId');
                 console.log('Retrieved discordId from localStorage:', discordId);
-                if (storedAccessToken) {
+                if (!storedAccessToken || !discordId) {
+                    loginWithDiscord();
+                } else {
                     const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
                     const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
@@ -262,6 +264,7 @@
                 }
             }
         }
+
 
         function escapeHtml(unsafe) {
             return unsafe
@@ -485,7 +488,11 @@
             console.log('Copied to clipboard:', text);
         }
 
-        window.onload = handleCallback;
+        window.onload = () => {
+            localStorage.removeItem('discordId');
+            localStorage.removeItem('accessToken');
+            handleCallback();
+        };
     </script>
 </body>
 </html>
