@@ -5,158 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cDPT AI Chatbot</title>
     <link href="/dist/styles.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
-
-        body {
-            font-family: 'Anybody', sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow: auto;
-        }
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            padding: 20px;
-            background-color: #000;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            margin-top: 20px;
-        }
-        h1 {
-            color: #fff;
-        }
-        h3 {
-            font-weight: normal; 
-            font-style: italic; 
-            color: #fff;
-        }
-        .chat-box {
-            max-height: 1000px;
-            overflow-y: auto;
-            border: 1px solid #333;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #333;
-            color: #fff;
-        }
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            width: fit-content;
-            max-width: 100%;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            position: relative;
-        }
-        .chat-message.user {
-            background-color: #777;
-            align-self: flex-end;
-            margin-left: auto;
-            text-align: right;
-        }
-        .chat-message.bot {
-            background-color: #555;
-            align-self: flex-start;
-            margin-right: auto;
-            text-align: left;
-        }
-        .chat-message code {
-            background-color: #222;
-            padding: 5px;
-            border-radius: 3px;
-            display: block;
-            white-space: pre;
-            overflow-x: auto;
-        }
-        .chat-message pre code {
-            display: block;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #fff;
-        }
-        .input-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            resize: vertical;
-            height: auto;
-            min-height: 100px;
-            background-color: #444;
-            color: #fff;
-            overflow: auto;
-        }
-        .button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: auto;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-        .button img {
-            margin-right: 10px;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .hidden {
-            display: none;
-        }
-        #logo {
-            max-width: 60%;
-            height: auto;
-            margin-bottom: 20px;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .typing #logo {
-            animation: pulse 1s infinite alternate;
-        }
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.5;
-            }
-        }
-        .copy-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 5px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-        .copy-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -267,7 +115,7 @@
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
+                .replace(/"//g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
 
@@ -297,7 +145,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
             console.log('Added typing indicator.');
 
-            document.getElementById('logo').classList.add('typing');
+            document.getElementById('logo').classList.add('animate-pulse');
 
             try {
                 // Check if threadId exists in local storage
@@ -331,7 +179,7 @@
                     console.log('Removed typing indicator.');
                 }
 
-                document.getElementById('logo').classList.remove('typing');
+                document.getElementById('logo').classList.remove('animate-pulse');
 
                 if (response.ok) {
                     // Send the received message to the server for Markdown processing
@@ -376,7 +224,7 @@
                     console.log('Removed typing indicator.');
                 }
 
-                document.getElementById('logo').classList.remove('typing');
+                document.getElementById('logo').classList.remove('animate-pulse');
 
                 addMessageToChat('bot', `Error: ${error.message}`);
                 console.error('Error sending message:', error.message);
