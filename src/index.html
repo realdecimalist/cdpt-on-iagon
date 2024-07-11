@@ -201,7 +201,7 @@
                 await fetchConfig();
             }
 
-            const redirectUri = encodeURIComponent('https://black-math-6698.iagon.io/'); 
+            const redirectUri = encodeURIComponent('https://black-math-6698.iagon.io/');
             const scope = encodeURIComponent('identify applications.entitlements');
             const responseType = 'code';
             const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
@@ -228,6 +228,7 @@
 
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('discordId', discordId);
+                console.log('Saved discordId to localStorage:', discordId);
 
                 const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
@@ -246,6 +247,7 @@
             } else {
                 const storedAccessToken = localStorage.getItem('accessToken');
                 discordId = localStorage.getItem('discordId');
+                console.log('Retrieved discordId from localStorage:', discordId);
                 if (storedAccessToken) {
                     const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
@@ -363,7 +365,7 @@
                         },
                         body: JSON.stringify({ discordId, chatHistory })
                     });
-                    console.log('Chat history saved.');
+                    console.log('Chat history saved for discordId:', discordId);
                 } catch (saveError) {
                     console.error('Failed to save chat history:', saveError);
                     addMessageToChat('bot', 'Warning: Failed to save chat history. You can continue chatting, but the conversation will not be saved.');
@@ -391,6 +393,7 @@
 
         async function loadPreviousChat() {
             console.log('Load previous chat button clicked.');
+            console.log('Loading chat history for discordId:', discordId);
             try {
                 const response = await fetch(`/load-chat?discordId=${discordId}`);
                 if (!response.ok) {
@@ -453,8 +456,10 @@
                 if (index < message.length) {
                     element.innerHTML = message.substring(0, index + 1);
                     index++;
-                    chatBox.scrollTop = chatBox.scrollHeight; 
-                    setTimeout(type, 1); 
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                    setTimeout(type, 1);
+
                 }
             }
             setTimeout(type, 1);
