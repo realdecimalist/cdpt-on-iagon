@@ -166,13 +166,18 @@ app.get('/load-chat', async (req, res) => {
         }
 
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
-        console.log('Loaded chat history:', chatHistory);
-        res.json(chatHistory);
+
+        // Sort chat history by timestamp before sending
+        const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
+
+        console.log('Loaded chat history:', sortedChatHistory);
+        res.json(sortedChatHistory);
     } catch (error) {
         console.error('Error loading chat history:', error);
         res.status(500).json({ error: 'Failed to load chat history' });
     }
 });
+
 
 app.post('/process-markdown', (req, res) => {
     const { markdownText } = req.body;

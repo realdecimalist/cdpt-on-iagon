@@ -412,7 +412,9 @@
                 const chatHistory = await response.json();
                 console.log('Loaded chat history:', chatHistory);
 
-                for (const message of chatHistory) {
+                const sortedChatHistory = sortMessagesByTimestamp(chatHistory);
+
+                for (const message of sortedChatHistory) {
                     const htmlContentResponse = await fetch('/process-markdown', {
                         method: 'POST',
                         headers: {
@@ -421,7 +423,7 @@
                         body: JSON.stringify({ markdownText: message.text })
                     });
                     const htmlContentData = await htmlContentResponse.json();
-                    addMessageToChat(message.sender, htmlContentData.htmlContent);
+                    addMessageToChat(message.sender, htmlContentData.htmlContent, message.timestamp);
                 }
             } catch (error) {
                 console.error('Error loading chat history:', error);
@@ -429,29 +431,25 @@
             }
         }
 
-        function addMessageToChat(sender, message, typingEffect = false) {
+        function sortMessagesByTimestamp(messages) {
+            return messages.sort((a, b) => b.timestamp - a.timestamp);
+        }
+        function addMessageToChat(sender, message, timestamp, typingEffect = false) {
             const chatBox = document.getElementById('chat-box');
             const messageDiv = document.createElement('div');
             messageDiv.className = `chat-message ${sender}`;
+            messageDiv.setAttribute('data-timestamp', timestamp); // Add timestamp as a data attribute
+            messageDiv.innerHTML = message; // Use innerHTML to correctly display HTML content
+
             chatBox.appendChild(messageDiv);
 
-            if (typingEffect) {
-                typeMessage(messageDiv, message);
-            } else {
-                // Use innerHTML to correctly display HTML content
-                messageDiv.innerHTML = message;
-                if (sender === 'bot' && message.includes('```')) {
-                    const codeBlocks = messageDiv.querySelectorAll('pre code');
-                    codeBlocks.forEach((codeBlock, index) => {
-                        const copyButton = document.createElement('button');
-                        copyButton.className = 'copy-button';
-                        copyButton.innerHTML = 'Copy';
-                        copyButton.onclick = () => copyToClipboard(codeBlock.innerText);
-                        codeBlock.parentElement.style.position = 'relative';
-                        codeBlock.parentElement.appendChild(copyButton);
-                    });
-                }
-            }
+            // Sort messages by timestamp after adding a new message
+            const messages = Array.from(chatBox.children);
+            const sortedMessages = sortMessagesByTimestamp(messages);
+
+            // Clear chat box and append sorted messages
+            chatBox.innerHTML = '';
+            sortedMessages.forEach(msg => chatBox.appendChild(msg));
 
             chatBox.scrollTop = chatBox.scrollHeight;
             console.log('Added message to chat:', { sender, message });
