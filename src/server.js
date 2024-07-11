@@ -25,9 +25,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const IAGON_API_KEY = process.env.IAGON_API_KEY;
 
 app.get('/config', (req, res) => {
-    res.json({
-        clientId: CLIENT_ID
-    });
+    res.json({ clientId: CLIENT_ID });
     console.log('Sent config:', { clientId: CLIENT_ID });
 });
 
@@ -113,8 +111,7 @@ app.post('/save-chat', async (req, res) => {
         const formData = new FormData();
         formData.append('file', Buffer.from(JSON.stringify(chatHistory)), `${discordId}_chatHistory.json`);
         formData.append('filename', `${discordId}_chatHistory.json`);
-        formData.append('visibility', 'private');
-        formData.append('password', discordId); // Use discordId as the password
+        formData.append('visibility', 'public'); 
 
         console.log('Saving chat history for Discord ID:', discordId);
 
@@ -150,7 +147,6 @@ app.get('/load-chat', async (req, res) => {
 
         const formData = new FormData();
         formData.append('id', `${discordId}_chatHistory.json`);
-        formData.append('password', discordId); // Use discordId as the password
 
         console.log('Loading chat history for Discord ID:', discordId);
 
