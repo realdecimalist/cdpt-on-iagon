@@ -403,7 +403,7 @@
             console.log('Load previous chat button clicked.');
             console.log('Loading chat history for discordId:', discordId);
             try {
-                const response = await fetch(`/load-chat?discordId=${discordId}`);
+                const response = await fetch(`/load-chat?discordId=${encodeURIComponent(discordId)}`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to load chat history:', errorData);
@@ -430,6 +430,7 @@
                 alert('Failed to load chat history');
             }
         }
+
 
         function sortMessagesByTimestamp(messages) {
             return messages.sort((a, b) => b.timestamp - a.timestamp);
