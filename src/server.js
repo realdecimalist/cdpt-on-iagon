@@ -145,10 +145,11 @@ app.get('/load-chat', async (req, res) => {
             return res.status(400).json({ error: 'discordId is required' });
         }
 
-        const formData = new FormData();
-        formData.append('id', `${discordId}_chatHistory.json`);
+        const fileId = `${discordId}_chatHistory.json`;
+        console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
 
-        console.log('Loading chat history for Discord ID:', discordId);
+        const formData = new FormData();
+        formData.append('id', fileId);
 
         const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
             method: 'POST',
