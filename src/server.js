@@ -148,15 +148,11 @@ app.get('/load-chat', async (req, res) => {
         const fileId = `${discordId}_chatHistory.json`;
         console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
 
-        const formData = new FormData();
-        formData.append('id', fileId);
-
-        const response = await fetch('https://gw.iagon.com/api/v2/storage/download', {
-            method: 'POST',
+        const response = await fetch(`https://gw.iagon.com/api/v2/storage/download/${fileId}`, {
+            method: 'GET',
             headers: {
                 'x-api-key': IAGON_API_KEY
-            },
-            body: formData
+            }
         });
 
         const data = await response.json();
@@ -177,8 +173,6 @@ app.get('/load-chat', async (req, res) => {
         res.status(500).json({ error: 'Failed to load chat history' });
     }
 });
-
-
 
 app.post('/process-markdown', (req, res) => {
     const { markdownText } = req.body;
