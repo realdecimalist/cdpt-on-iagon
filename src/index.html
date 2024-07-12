@@ -201,7 +201,7 @@
                 await fetchConfig();
             }
 
-            const redirectUri = encodeURIComponent('https://black-math-6698.iagon.io/');
+            const redirectUri = encodeURIComponent('https://long-sky-3951.iagon.io/');
             const scope = encodeURIComponent('identify applications.entitlements');
             const responseType = 'code';
             const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
@@ -214,7 +214,7 @@
             const code = urlParams.get('code');
             if (code) {
                 console.log('Authorization Code:', code);
-                const tokenResponse = await fetch('https://black-math-6698.iagon.io/discord/token', {
+                const tokenResponse = await fetch('https://long-sky-3951.iagon.io/discord/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -227,7 +227,7 @@
 
                 localStorage.setItem('accessToken', accessToken);
 
-                const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${accessToken}`);
+                const entitlementsResponse = await fetch(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
                 console.log('Entitlements:', entitlements);
 
@@ -256,7 +256,7 @@
                 if (!storedAccessToken || !discordId) {
                     loginWithDiscord();
                 } else {
-                    const entitlementsResponse = await fetch(`https://black-math-6698.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
+                    const entitlementsResponse = await fetch(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
                     const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
                     if (hasSubscription) {
