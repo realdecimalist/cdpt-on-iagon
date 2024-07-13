@@ -25,96 +25,6 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const IAGON_API_KEY = process.env.IAGON_API_KEY;
 const MAESTRO_API_KEY = process.env.MAESTRO_API_KEY;
 
-// Helper functions
-async function get(url) {
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  });
-  return response.json();
-}
-
-async function post(url, body) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  return response.json();
-}
-
-async function fetchStabilityPools() {
-  const data = await get(`https://analytics.indigoprotocol.io/api/stability-pools`);
-  console.log("Fetched stability pools data:", data);
-  return data;
-}
-
-async function fetchApr(key) {
-  const data = await post(`https://analytics.indigoprotocol.io/api/apr/?key=${key}`)
-    .then(res => {
-      console.log(`Fetched APR for ${key}:`, res);
-      return parseFloat(res.value) || 0;
-    })
-    .catch((error) => {
-      console.error(`Error fetching APR for ${key}:`, error);
-      return 0;
-    });
-  return data;
-}
-
-async function fetchAssetAnalytics(assetName) {
-  try {
-    const response = await get(`https://analytics.indigoprotocol.io/api/assets/${assetName}/analytics`);
-    console.log(`Fetched asset analytics for ${assetName}:`, response);
-    return response[assetName];
-  } catch (error) {
-    console.error(`Error fetching analytics for ${assetName}:`, error);
-    return null;
-  }
-}
-
-async function fetchAdaPriceToUsd() {
-  try {
-    const response = await get('https://analytics.indigoprotocol.io/api/price?from=ADA&to=USD');
-    console.log("Fetched ADA price to USD:", response);
-    return response.price;
-  } catch (error) {
-    console.error('Error fetching ADA price:', error);
-    return 0;
-  }
-}
-
-async function calculateTvlUsd(assetAnalytics, adaPriceUsd) {
-  if (!assetAnalytics) return 0;
-  const tvlUsd = assetAnalytics.totalValueLocked * adaPriceUsd;
-  console.log("Calculated TVL USD:", tvlUsd);
-  return tvlUsd;
-}
-
-async function getCurrentEpochDetails() {
-  const url = 'https://mainnet.gomaestro-api.org/v1/epochs/current';
-  const headers = {
-    'Accept': 'application/json',
-    'api-key': process.env.MAESTRO_API_KEY
-  };
-
-  try {
-    const response = await fetch(url, { headers });
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Failed to fetch epoch details:', data);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching epoch details:', error);
-    return null;
-  }
-}
-
-// Express routes
 app.get('/config', (req, res) => {
   res.json({ clientId: CLIENT_ID });
   console.log('Sent config:', { clientId: CLIENT_ID });
@@ -300,19 +210,41 @@ app.get('/get-ada-price', async (req, res) => {
   }
 });
 
-// New endpoint to get current epoch details
-app.get('/get-epoch-details', async (req, res) => {
+// New endpoint to handle function calling
+app.post('/assistant/function-call', async (req, res) => {
+  const { functionName, parameters } = req.body;
+
+  console.log('Function call requested:', { functionName, parameters });
+
   try {
-    const data = await getCurrentEpochDetails();
-    if (!data) {
-      return res.status(500).json({ error: 'Failed to fetch epoch details' });
+    if (functionName === 'get_stock_price') {
+      const stockSymbol = parameters.symbol;
+
+      // Fetch the stock price
+      const stockPrice = await fetchStockPrice(stockSymbol);
+      return res.json({ price: stockPrice });
     }
-    res.json(data);
+
+    res.status(400).json({ error: 'Unknown function' });
   } catch (error) {
-    console.error('Error fetching epoch details:', error);
-    res.status(500).json({ error: 'Failed to fetch epoch details' });
+    console.error('Error handling function call:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+async function fetchStockPrice(symbol) {
+  const url = `https://api.stockapi.com/v1/quote?symbol=${symbol}&api_key=${process.env.STOCK_API_KEY}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (response.ok) {
+    return data.price;
+  } else {
+    throw new Error(`Error fetching stock price: ${data.message}`);
+  }
+}
 
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
