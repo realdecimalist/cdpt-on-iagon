@@ -210,29 +210,41 @@ app.get('/get-ada-price', async (req, res) => {
   }
 });
 
-// Endpoint to get current epoch details from Maestro API
-app.get('/get-current-epoch', async (req, res) => {
-  const url = 'https://mainnet.gomaestro-api.org/v1/epochs/current';
-  const headers = {
-    'Accept': 'application/json',
-    'api-key': MAESTRO_API_KEY
-  };
+// New endpoint to handle function calling
+app.post('/assistant/function-call', async (req, res) => {
+  const { functionName, parameters } = req.body;
+
+  console.log('Function call requested:', { functionName, parameters });
 
   try {
-    const response = await fetch(url, { headers });
-    const data = await response.json();
+    if (functionName === 'get_stock_price') {
+      const stockSymbol = parameters.symbol;
 
-    if (!response.ok) {
-      console.error('Failed to fetch current epoch details:', data);
-      return res.status(response.status).json(data);
+      // Fetch the stock price
+      const stockPrice = await fetchStockPrice(stockSymbol);
+      return res.json({ price: stockPrice });
     }
 
-    res.json(data);
+    res.status(400).json({ error: 'Unknown function' });
   } catch (error) {
-    console.error('Error fetching current epoch details:', error);
-    res.status(500).json({ error: 'Failed to fetch current epoch details' });
+    console.error('Error handling function call:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+async function fetchStockPrice(symbol) {
+  const url = `https://api.stockapi.com/v1/quote?symbol=${symbol}&api_key=${process.env.STOCK_API_KEY}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  if (response.ok) {
+    return data.price;
+  } else {
+    throw new Error(`Error fetching stock price: ${data.message}`);
+  }
+}
 
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
