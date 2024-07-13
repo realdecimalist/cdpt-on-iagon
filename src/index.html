@@ -176,6 +176,7 @@
                 <button class="button" onclick="clearChat()">Clear Chat</button>
                 <button class="button" onclick="sendMessage()">Send Message</button>
                 <button class="button" onclick="loadPreviousChat()">Load Previous Chat</button>
+                <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
             </div>
         </div>
     </div>
@@ -269,7 +270,6 @@
                 }
             }
         }
-
 
         function escapeHtml(unsafe) {
             return unsafe
@@ -431,10 +431,10 @@
             }
         }
 
-
         function sortMessagesByTimestamp(messages) {
             return messages.sort((a, b) => b.timestamp - a.timestamp);
         }
+
         function addMessageToChat(sender, message, timestamp, typingEffect = false) {
             const chatBox = document.getElementById('chat-box');
             const messageDiv = document.createElement('div');
@@ -490,6 +490,24 @@
             document.body.removeChild(textarea);
             alert('Copied to clipboard');
             console.log('Copied to clipboard:', text);
+        }
+
+        async function getCurrentEpochDetails() {
+            try {
+                const response = await fetch('/get-current-epoch-details');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch current epoch details:', errorData);
+                    alert('Failed to fetch current epoch details');
+                    return;
+                }
+
+                const data = await response.json();
+                alert(`Current Epoch Details: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                console.error('Error fetching current epoch details:', error);
+                alert('Error fetching current epoch details');
+            }
         }
 
         window.onload = () => {

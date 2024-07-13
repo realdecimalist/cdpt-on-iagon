@@ -210,29 +210,29 @@ app.get('/get-ada-price', async (req, res) => {
   }
 });
 
-// Endpoint to get current epoch details from Maestro API
-app.get('/get-current-epoch', async (req, res) => {
-  const url = 'https://mainnet.gomaestro-api.org/v1/epochs/current';
-  const headers = {
-    'Accept': 'application/json',
-    'api-key': MAESTRO_API_KEY
-  };
-
-  try {
-    const response = await fetch(url, { headers });
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Failed to fetch current epoch details:', data);
-      return res.status(response.status).json(data);
+// New endpoint to get current epoch details
+app.get('/get-current-epoch-details', async (req, res) => {
+    try {
+      const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
+        headers: {
+          'Accept': 'application/json',
+          'api-key': MAESTRO_API_KEY
+        }
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to fetch current epoch details:', errorData);
+        return res.status(response.status).json(errorData);
+      }
+  
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('Error fetching current epoch details:', error);
+      res.status(500).json({ error: 'Failed to fetch current epoch details' });
     }
-
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching current epoch details:', error);
-    res.status(500).json({ error: 'Failed to fetch current epoch details' });
-  }
-});
+  });
 
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
