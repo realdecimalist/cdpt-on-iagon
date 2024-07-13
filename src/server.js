@@ -15,15 +15,8 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Define CORS options
-const corsOptions = {
-    origin: '*', // Allowed requests from any origin
-    methods: ['GET', 'POST'], // Allowed GET and POST requests
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed specific headers
-  };
-  
-  app.use(cors(corsOptions)); // Enabled CORS with the specified options
-  app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../dist')));
 
