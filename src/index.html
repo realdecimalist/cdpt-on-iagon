@@ -177,6 +177,8 @@
                 <button class="button" onclick="sendMessage()">Send Message</button>
                 <button class="button" onclick="loadPreviousChat()">Load Previous Chat</button>
                 <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
+                <button class="button" onclick="getMarketPrice('ADA')">Get ADA Price</button>
+                <button class="button" onclick="getMarketPrice('BTC')">Get BTC Price</button>
             </div>
         </div>
     </div>
@@ -519,6 +521,36 @@
                 addMessageToChat('bot', 'Error fetching current epoch details');
             }
         }
+
+
+        async function getMarketPrice(currency) {
+            try {
+                const chatBox = document.getElementById('chat-box');
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'chat-message bot';
+                typingIndicator.textContent = `Fetching ${currency} price...`;
+                typingIndicator.id = 'typingIndicator';
+                chatBox.appendChild(typingIndicator);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                const response = await fetch(`/get-market-price?currency=${currency}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(`Failed to fetch ${currency} price:`, errorData);
+                    addMessageToChat('bot', `Failed to fetch ${currency} price`);
+                    return;
+                }
+
+                const data = await response.json();
+                const priceDetails = `${currency} Price: ${data.price}`;
+                addMessageToChat('bot', priceDetails);
+                chatBox.removeChild(typingIndicator);
+            } catch (error) {
+                console.error(`Error fetching ${currency} price:`, error);
+                addMessageToChat('bot', `Error fetching ${currency} price`);
+            }
+        }
+
 
         window.onload = () => {
             localStorage.removeItem('discordId');

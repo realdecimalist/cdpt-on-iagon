@@ -234,6 +234,35 @@ app.get('/get-current-epoch-details', async (req, res) => {
     }
   });
 
+  app.get('/get-market-price', async (req, res) => {
+    const { currency } = req.query;
+
+    if (!currency) {
+        return res.status(400).json({ error: 'Currency is required' });
+    }
+
+    const url = `https://api.gomaestro.org/market-price/${currency}`;
+    const headers = {
+        'Authorization': `Bearer ${MAESTRO_API_KEY}`,
+        'Content-Type': 'application/json'
+    };
+
+    try {
+        const response = await fetch(url, { headers });
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error(`Failed to fetch ${currency} price:`, data);
+            return res.status(response.status).json(data);
+        }
+
+        res.json({ price: data.price });
+    } catch (error) {
+        console.error(`Error fetching ${currency} price:`, error);
+        res.status(500).json({ error: `Failed to fetch ${currency} price` });
+    }
+});
+
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
 });
