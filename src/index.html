@@ -156,6 +156,7 @@
             background-color: #0056b3;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -187,10 +188,9 @@
 
         async function fetchConfig() {
             try {
-                const response = await fetch('/config');
-                const data = await response.json();
-                clientId = data.clientId;
-                console.log('Fetched config:', data);
+                const response = await axios.get('/config');
+                clientId = response.data.clientId;
+                console.log('Fetched config:', response.data);
             } catch (error) {
                 console.error('Error fetching config:', error);
             }
@@ -214,21 +214,19 @@
             const code = urlParams.get('code');
             if (code) {
                 console.log('Authorization Code:', code);
-                const tokenResponse = await fetch('https://long-sky-3951.iagon.io/discord/token', {
-                    method: 'POST',
+                const tokenResponse = await axios.post('https://long-sky-3951.iagon.io/discord/token', { code }, {
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ code })
+                    }
                 });
-                const tokenData = await tokenResponse.json();
+                const tokenData = tokenResponse.data;
                 console.log('Token Data:', tokenData);
                 const accessToken = tokenData.access_token;
 
                 localStorage.setItem('accessToken', accessToken);
 
-                const entitlementsResponse = await fetch(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${accessToken}`);
-                const entitlements = await entitlementsResponse.json();
+                const entitlementsResponse = await axios.get(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${accessToken}`);
+                const entitlements = entitlementsResponse.data;
                 console.log('Entitlements:', entitlements);
 
                 if (entitlements && Array.isArray(entitlements) && entitlements.length > 0) {
@@ -256,8 +254,8 @@
                 if (!storedAccessToken || !discordId) {
                     loginWithDiscord();
                 } else {
-                    const entitlementsResponse = await fetch(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
-                    const entitlements = await entitlementsResponse.json();
+                    const entitlementsResponse = await axios.get(`https://long-sky-3951.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
+                    const entitlements = entitlementsResponse.data;
                     const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
                     if (hasSubscription) {
                         document.getElementById('login-button').classList.add('hidden');
@@ -313,27 +311,23 @@
                 threadId = localStorage.getItem('threadId');
                 if (!threadId) {
                     // Create a new thread if it doesn't exist
-                    const threadResponse = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
-                        method: 'POST',
+                    const threadResponse = await axios.post('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', { message }, {
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ message })
+                        }
                     });
-                    const threadData = await threadResponse.json();
+                    const threadData = threadResponse.data;
                     threadId = threadData.threadId;
                     localStorage.setItem('threadId', threadId); // Store the new threadId in local storage
                 }
 
-                const response = await fetch('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', {
-                    method: 'POST',
+                const response = await axios.post('https://afe2am4o4cexr5ccxicifawnga0aqxqc.lambda-url.us-east-1.on.aws/', { message, threadId }, {
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message, threadId }) // Send the threadId with the message
+                    }
                 });
 
-                const data = await response.json();
+                const data = response.data;
 
                 if (typingIndicator && typingIndicator.parentNode === chatBox) {
                     chatBox.removeChild(typingIndicator);
@@ -342,16 +336,14 @@
 
                 document.getElementById('logo').classList.remove('typing');
 
-                if (response.ok) {
+                if (response.status === 200) {
                     // Send the received message to the server for Markdown processing
-                    const htmlContentResponse = await fetch('/process-markdown', {
-                        method: 'POST',
+                    const htmlContentResponse = await axios.post('/process-markdown', { markdownText: data.message }, {
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ markdownText: data.message })
+                        }
                     });
-                    const htmlContentData = await htmlContentResponse.json();
+                    const htmlContentData = htmlContentResponse.data;
 
                     addMessageToChat('bot', htmlContentData.htmlContent);
                     console.log('Bot response received:', data.message);
@@ -366,12 +358,10 @@
                 }));
 
                 try {
-                    await fetch('/save-chat', {
-                        method: 'POST',
+                    await axios.post('/save-chat', { discordId, chatHistory }, {
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ discordId, chatHistory })
+                        }
                     });
                     console.log('Chat history saved for discordId:', discordId);
                 } catch (saveError) {
@@ -403,26 +393,24 @@
             console.log('Load previous chat button clicked.');
             console.log('Loading chat history for discordId:', discordId);
             try {
-                const response = await fetch(`/load-chat?discordId=${encodeURIComponent(discordId)}`);
-                if (!response.ok) {
-                    const errorData = await response.json();
+                const response = await axios.get(`/load-chat?discordId=${encodeURIComponent(discordId)}`);
+                if (response.status !== 200) {
+                    const errorData = response.data;
                     console.error('Failed to load chat history:', errorData);
                     throw new Error('Failed to load chat history');
                 }
-                const chatHistory = await response.json();
+                const chatHistory = response.data;
                 console.log('Loaded chat history:', chatHistory);
 
                 const sortedChatHistory = sortMessagesByTimestamp(chatHistory);
 
                 for (const message of sortedChatHistory) {
-                    const htmlContentResponse = await fetch('/process-markdown', {
-                        method: 'POST',
+                    const htmlContentResponse = await axios.post('/process-markdown', { markdownText: message.text }, {
                         headers: {
                             'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ markdownText: message.text })
+                        }
                     });
-                    const htmlContentData = await htmlContentResponse.json();
+                    const htmlContentData = htmlContentResponse.data;
                     addMessageToChat(message.sender, htmlContentData.htmlContent, message.timestamp);
                 }
             } catch (error) {
