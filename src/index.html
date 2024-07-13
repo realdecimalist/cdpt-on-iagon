@@ -175,7 +175,7 @@
             <div class="button-group">
                 <button class="button" onclick="clearChat()">Clear Chat</button>
                 <button class="button" onclick="sendMessage()">Send Message</button>
-                <button class="button" onclick="loadPreviousChat()">Load Previous Chat</button>
+                <button class="button" onclick="loadPreviousChat('669286a6143a8475482c3e05')">Load Previous Chat</button>
                 <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
                 <button class="button" onclick="getMarketPrice('ADA')">Get ADA Price</button>
                 <button class="button" onclick="getMarketPrice('BTC')">Get BTC Price</button>
@@ -401,11 +401,11 @@
             }
         });
 
-        async function loadPreviousChat() {
+        async function loadPreviousChat(fileId) {
             console.log('Load previous chat button clicked.');
-            console.log('Loading chat history for discordId:', discordId);
+            console.log('Loading chat history for fileId:', fileId);
             try {
-                const response = await fetch(`/load-chat?discordId=${encodeURIComponent(discordId)}`);
+                const response = await fetch(`/load-chat?fileId=${encodeURIComponent(fileId)}`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('Failed to load chat history:', errorData);
@@ -551,6 +551,10 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
+            loadPreviousChat(fileId);
+        });
 
         window.onload = () => {
             localStorage.removeItem('discordId');

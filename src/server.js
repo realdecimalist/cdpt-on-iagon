@@ -155,9 +155,9 @@ app.get('/load-chat', async (req, res) => {
         });
 
         if (!response.ok) {
-            const data = await response.json();
-            console.error('Failed to load chat history:', data);
-            return res.status(response.status).json(data);
+            const errorData = await response.json();
+            console.error('Failed to load chat history:', errorData);
+            return res.status(response.status).json(errorData);
         }
 
         const data = await response.json();
@@ -173,6 +173,7 @@ app.get('/load-chat', async (req, res) => {
         res.status(500).json({ error: 'Failed to load chat history' });
     }
 });
+
 
 
 app.post('/process-markdown', (req, res) => {
