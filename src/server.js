@@ -145,22 +145,29 @@ app.get('/load-chat', async (req, res) => {
             return res.status(400).json({ error: 'discordId is required' });
         }
 
-        const fileId = `${discordId}_chatHistory.json`;
-        console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
-
-        const formData = new FormData();
-        formData.append('id', fileId);
-
-        const requestOptions = {
-            method: 'POST',
-            body: formData,
+        // Fetch the file metadata to get the _id
+        const metadataResponse = await fetch(`https://gw.iagon.com/api/v2/storage/metadata?name=${discordId}_chatHistory.json`, {
+            method: 'GET',
             headers: {
                 'x-api-key': IAGON_API_KEY
-            },
-            redirect: 'follow'
-        };
+            }
+        });
 
-        const response = await fetch('https://gw.iagon.com/api/v2/storage/download', requestOptions);
+        const metadata = await metadataResponse.json();
+        if (!metadataResponse.ok) {
+            console.error('Failed to fetch file metadata:', metadata);
+            return res.status(metadataResponse.status).json(metadata);
+        }
+
+        const fileId = metadata.data._id;
+        console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
+
+        const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${fileId}/download`, {
+            method: 'GET',
+            headers: {
+                'x-api-key': IAGON_API_KEY
+            }
+        });
 
         const data = await response.json();
         if (!response.ok) {
