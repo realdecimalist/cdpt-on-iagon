@@ -1,5 +1,5 @@
 import express from 'express';
-import axios from 'axios';
+import fetch from 'node-fetch';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -15,8 +15,15 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors());
-app.use(express.json());
+// Define CORS options
+const corsOptions = {
+    origin: '*', // Allowed requests from any origin
+    methods: ['GET', 'POST'], // Allowed GET and POST requests
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed specific headers
+  };
+  
+  app.use(cors(corsOptions)); // Enabled CORS with the specified options
+  app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../dist')));
 
@@ -25,6 +32,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const IAGON_API_KEY = process.env.IAGON_API_KEY;
 const MAESTRO_API_KEY = process.env.MAESTRO_API_KEY;
 
+
 async function getCurrentEpochDetails() {
   const url = 'https://mainnet.gomaestro-api.org/v1/epochs/current';
   const headers = {
@@ -32,22 +40,19 @@ async function getCurrentEpochDetails() {
     'api-key': process.env.MAESTRO_API_KEY
   };
 
-  console.log('Fetching current epoch details from Maestro API:', url);
-
   try {
-    const response = await axios.get(url, { headers });
-    const data = response.data;
+    const response = await fetch(url, { headers });
+    const data = await response.json();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       console.error('Failed to fetch epoch details:', data);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    console.log('Fetched current epoch details:', data);
     return data;
   } catch (error) {
     console.error('Error fetching epoch details:', error);
-    throw error;
+    return null;
   }
 }
 
@@ -69,16 +74,18 @@ app.post('/discord/token', async (req, res) => {
   console.log('Requesting token with params:', params.toString());
 
   try {
-    const tokenResponse = await axios.post('https://discord.com/api/oauth2/token', params, {
+    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+      body: params
     });
 
-    const tokenData = tokenResponse.data;
+    const tokenData = await tokenResponse.json();
     console.log('Token response:', tokenData);
 
-    if (tokenResponse.status !== 200) {
+    if (!tokenResponse.ok) {
       console.error('Token request failed:', tokenData);
       return res.status(tokenResponse.status).json(tokenData);
     }
@@ -105,16 +112,16 @@ app.get('/discord/entitlements', async (req, res) => {
   console.log('Requesting entitlements with access token:', accessToken);
 
   try {
-    const entitlementsResponse = await axios.get(`https://discord.com/api/v10/applications/${CLIENT_ID}/entitlements?${queryParams.toString()}`, {
+    const entitlementsResponse = await fetch(`https://discord.com/api/v10/applications/${CLIENT_ID}/entitlements?${queryParams.toString()}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`
       }
     });
 
-    const entitlements = entitlementsResponse.data;
+    const entitlements = await entitlementsResponse.json();
     console.log('Entitlements response:', entitlements);
 
-    if (entitlementsResponse.status !== 200) {
+    if (!entitlementsResponse.ok) {
       console.error('Entitlements request failed:', entitlements);
       return res.status(entitlementsResponse.status).json(entitlements);
     }
@@ -141,15 +148,16 @@ app.post('/save-chat', async (req, res) => {
 
     console.log('Saving chat history for Discord ID:', discordId);
 
-    const response = await axios.post('https://gw.iagon.com/api/v2/storage/upload', formData, {
+    const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
+      method: 'POST',
       headers: {
-        ...formData.getHeaders(),
         'x-api-key': IAGON_API_KEY
-      }
+      },
+      body: formData
     });
 
-    const data = response.data;
-    if (response.status !== 200) {
+    const data = await response.json();
+    if (!response.ok) {
       console.error('Failed to save chat history:', data);
       return res.status(response.status).json(data);
     }
@@ -173,14 +181,15 @@ app.get('/load-chat', async (req, res) => {
     const fileId = `${discordId}_chatHistory.json`;
     console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
 
-    const response = await axios.get(`https://gw.iagon.com/api/v2/storage/download/${fileId}`, {
+    const response = await fetch(`https://gw.iagon.com/api/v2/storage/download/${fileId}`, {
+      method: 'GET',
       headers: {
         'x-api-key': IAGON_API_KEY
       }
     });
 
-    const data = response.data;
-    if (response.status !== 200) {
+    const data = await response.json();
+    if (!response.ok) {
       console.error('Failed to load chat history:', data);
       return res.status(response.status).json(data);
     }
@@ -218,10 +227,10 @@ app.get('/get-ada-price', async (req, res) => {
   };
 
   try {
-    const response = await axios.get(url, { headers });
-    const data = response.data;
+    const response = await fetch(url, { headers });
+    const data = await response.json();
 
-    if (response.status !== 200) {
+    if (!response.ok) {
       console.error('Failed to fetch ADA price:', data);
       return res.status(response.status).json(data);
     }
