@@ -139,40 +139,46 @@ app.post('/save-chat', async (req, res) => {
 });
 
 app.get('/load-chat', async (req, res) => {
-  try {
-    const { discordId } = req.query;
+    try {
+        const { discordId } = req.query;
+        if (!discordId) {
+            return res.status(400).json({ error: 'discordId is required' });
+        }
 
-    if (!discordId) {
-      return res.status(400).json({ error: 'discordId is required' });
+        const fileId = `${discordId}_chatHistory.json`;
+        console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
+
+        const formData = new FormData();
+        formData.append('id', fileId);
+
+        const requestOptions = {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'x-api-key': IAGON_API_KEY
+            },
+            redirect: 'follow'
+        };
+
+        const response = await fetch('https://gw.iagon.com/api/v2/storage/download', requestOptions);
+
+        const data = await response.json();
+        if (!response.ok) {
+            console.error('Failed to load chat history:', data);
+            return res.status(response.status).json(data);
+        }
+
+        const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
+
+        // Sort chat history by timestamp before sending
+        const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
+
+        console.log('Loaded chat history:', sortedChatHistory);
+        res.json(sortedChatHistory);
+    } catch (error) {
+        console.error('Error loading chat history:', error);
+        res.status(500).json({ error: 'Failed to load chat history' });
     }
-
-    const fileId = `${discordId}_chatHistory.json`;
-    console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
-
-    const response = await fetch(`https://gw.iagon.com/api/v2/storage/download/${fileId}`, {
-      method: 'GET',
-      headers: {
-        'x-api-key': IAGON_API_KEY
-      }
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      console.error('Failed to load chat history:', data);
-      return res.status(response.status).json(data);
-    }
-
-    const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
-
-    // Sort chat history by timestamp before sending
-    const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
-
-    console.log('Loaded chat history:', sortedChatHistory);
-    res.json(sortedChatHistory);
-  } catch (error) {
-    console.error('Error loading chat history:', error);
-    res.status(500).json({ error: 'Failed to load chat history' });
-  }
 });
 
 app.post('/process-markdown', (req, res) => {
