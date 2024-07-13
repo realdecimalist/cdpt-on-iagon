@@ -140,27 +140,12 @@ app.post('/save-chat', async (req, res) => {
 
 app.get('/load-chat', async (req, res) => {
     try {
-        const { discordId } = req.query;
-        if (!discordId) {
-            return res.status(400).json({ error: 'discordId is required' });
+        const { fileId } = req.query;
+        if (!fileId) {
+            return res.status(400).json({ error: 'fileId is required' });
         }
 
-        // Fetch the file metadata to get the _id
-        const metadataResponse = await fetch(`https://gw.iagon.com/api/v2/storage/metadata?name=${discordId}_chatHistory.json`, {
-            method: 'GET',
-            headers: {
-                'x-api-key': IAGON_API_KEY
-            }
-        });
-
-        const metadata = await metadataResponse.json();
-        if (!metadataResponse.ok) {
-            console.error('Failed to fetch file metadata:', metadata);
-            return res.status(metadataResponse.status).json(metadata);
-        }
-
-        const fileId = metadata.data._id;
-        console.log('Loading chat history for Discord ID:', discordId, 'with file ID:', fileId);
+        console.log('Loading chat history with file ID:', fileId);
 
         const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${fileId}/download`, {
             method: 'GET',
@@ -169,12 +154,13 @@ app.get('/load-chat', async (req, res) => {
             }
         });
 
-        const data = await response.json();
         if (!response.ok) {
+            const data = await response.json();
             console.error('Failed to load chat history:', data);
             return res.status(response.status).json(data);
         }
 
+        const data = await response.json();
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
 
         // Sort chat history by timestamp before sending
@@ -187,6 +173,7 @@ app.get('/load-chat', async (req, res) => {
         res.status(500).json({ error: 'Failed to load chat history' });
     }
 });
+
 
 app.post('/process-markdown', (req, res) => {
   const { markdownText } = req.body;
