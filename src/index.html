@@ -6,7 +6,6 @@
     <title>cDPT AI Chatbot</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
-
         body {
             font-family: 'Anybody', sans-serif;
             background-color: #000;
@@ -32,8 +31,8 @@
             color: #fff;
         }
         h3 {
-            font-weight: normal; 
-            font-style: italic; 
+            font-weight: normal;
+            font-style: italic;
             color: #fff;
         }
         .chat-box {
@@ -173,15 +172,14 @@
                 <textarea id="message" placeholder="Enter your message here..."></textarea>
             </div>
             <div class="button-group">
-                <button class="button" onclick="clearChat()">Clear Chat</button>
+                <button class="button" onclick="confirmClearChat()">Clear Chat</button>
                 <button class="button" onclick="sendMessage()">Send Message</button>
                 <button class="button" onclick="loadPreviousChat('669286a6143a8475482c3e05')">Load Previous Chat</button>
                 <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
-                <button class="button" onclick="getMarketPrice('ADA')">Get ADA/IAG Price</button>
+                <button class="button" onclick="getMarketPrice('ADA')">ADA/IAG Price</button>
             </div>
         </div>
     </div>
-
     <script>
         let clientId;
         let discordId;
@@ -474,6 +472,13 @@
             console.log('Started typing effect for message:', message);
         }
 
+        function confirmClearChat() {
+            const confirmation = confirm("Are you sure you want to clear the chat? This action cannot be undone and you will not be able to continue the conversation from the previous thread.");
+            if (confirmation) {
+                clearChat();
+            }
+        }
+
         function clearChat() {
             console.log('Clear chat button clicked.');
             const chatBox = document.getElementById('chat-box');
@@ -492,6 +497,7 @@
             alert('Copied to clipboard');
             console.log('Copied to clipboard:', text);
         }
+
 
         async function getCurrentEpochDetails() {
             try {
@@ -550,10 +556,10 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
-            loadPreviousChat(fileId);
-        });
+      //  document.addEventListener('DOMContentLoaded', () => {
+      //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
+      //      loadPreviousChat(fileId);
+      //  });
 
         window.onload = () => {
             localStorage.removeItem('discordId');
