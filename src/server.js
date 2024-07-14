@@ -192,26 +192,28 @@ app.get('/get-market-price', async (req, res) => {
 
     const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/ohlc/minswap/${currency}-IAG`;
     const headers = {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'api-key': MAESTRO_API_KEY
     };
 
     try {
         const response = await fetch(url, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'api-key': MAESTRO_API_KEY
-              }
+            headers: headers
         });
 
         const data = await response.json();
+
+        console.log('Response Data:', data); 
 
         if (!response.ok) {
             console.error(`Failed to fetch ${currency} price:`, data);
             return res.status(response.status).json(data);
         }
 
-        res.json({ price: data.price });
+        // Ensure the price field exists in the response data
+        const price = data.price || data.data?.price || 'Price not found';
+        res.json({ price: price });
     } catch (error) {
         console.error(`Error fetching ${currency} price:`, error);
         res.status(500).json({ error: `Failed to fetch ${currency} price` });
