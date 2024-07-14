@@ -142,12 +142,39 @@ app.get('/load-chat', async (req, res) => {
     try {
         const { fileId } = req.query;
         if (!fileId) {
+            console.error('Error: fileId is required');
             return res.status(400).json({ error: 'fileId is required' });
         }
 
         console.log('Loading chat history with file ID:', fileId);
 
-        const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${fileId}/download`, {
+        // Fetch the list of files
+        const listResponse = await fetch('https://gw.iagon.com/api/v2/storage/directory?visibility=public', {
+            method: 'GET',
+            headers: {
+                'x-api-key': IAGON_API_KEY,
+                'Authorization': `Bearer ${IAGON_API_KEY}`
+            }
+        });
+
+        if (!listResponse.ok) {
+            const errorData = await listResponse.json();
+            console.error('Failed to fetch file list:', errorData);
+            return res.status(listResponse.status).json(errorData);
+        }
+
+        const listData = await listResponse.json();
+        const files = listData.data.files;
+
+        // Identify the most recent file
+        const mostRecentFile = files.reduce((latest, file) => {
+            return new Date(file.updated_at) > new Date(latest.updated_at) ? file : latest;
+        });
+
+        console.log('Most recent file ID:', mostRecentFile._id);
+
+        // Fetch the most recent file
+        const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${mostRecentFile._id}/download`, {
             method: 'GET',
             headers: {
                 'x-api-key': IAGON_API_KEY,
@@ -241,35 +268,6 @@ app.get('/get-current-epoch-details', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch current epoch details' });
     }
   });
-
-  app.get('/get-market-price', async (req, res) => {
-    const { currency } = req.query;
-
-    if (!currency) {
-        return res.status(400).json({ error: 'Currency is required' });
-    }
-
-    const url = `https://api.gomaestro.org/market-price/${currency}`;
-    const headers = {
-        'Authorization': `Bearer ${MAESTRO_API_KEY}`,
-        'Content-Type': 'application/json'
-    };
-
-    try {
-        const response = await fetch(url, { headers });
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error(`Failed to fetch ${currency} price:`, data);
-            return res.status(response.status).json(data);
-        }
-
-        res.json({ price: data.price });
-    } catch (error) {
-        console.error(`Error fetching ${currency} price:`, error);
-        res.status(500).json({ error: `Failed to fetch ${currency} price` });
-    }
-});
 
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
