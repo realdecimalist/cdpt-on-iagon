@@ -183,12 +183,22 @@ app.get('/load-chat', async (req, res) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.text(); // Log the raw response text
             console.error('Failed to load chat history:', errorData);
-            return res.status(response.status).json(errorData);
+            return res.status(response.status).json({ error: errorData });
         }
 
-        const data = await response.json();
+        const rawData = await response.text(); // Get the raw response text
+        console.log('Raw response data:', rawData);
+
+        let data;
+        try {
+            data = JSON.parse(rawData); // Attempt to parse the raw response as JSON
+        } catch (parseError) {
+            console.error('Error parsing JSON:', parseError);
+            return res.status(500).json({ error: 'Failed to parse chat history' });
+        }
+
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
 
         // Sort chat history by timestamp before sending
