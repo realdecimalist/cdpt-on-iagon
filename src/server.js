@@ -207,7 +207,13 @@ app.get('/load-chat', async (req, res) => {
             return res.status(500).json({ error: 'Invalid data received' });
         }
 
-        const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
+        const chatHistoryBase64 = data.data;
+        if (typeof chatHistoryBase64 !== 'string') {
+            console.error('Error: data.data is not a string');
+            return res.status(500).json({ error: 'Invalid data format' });
+        }
+
+        const chatHistory = JSON.parse(Buffer.from(chatHistoryBase64, 'base64').toString('utf-8'));
 
         // Sort chat history by timestamp before sending
         const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
