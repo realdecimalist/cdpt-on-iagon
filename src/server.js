@@ -198,7 +198,10 @@ app.get('/get-market-price', async (req, res) => {
     try {
         const response = await fetch(url, {
             method: 'GET',
-            headers: headers
+            headers: {
+                'Accept': 'application/json',
+                'api-key': MAESTRO_API_KEY
+              }
         });
 
         const data = await response.json();
@@ -215,7 +218,6 @@ app.get('/get-market-price', async (req, res) => {
     }
 });
 
-// New endpoint to get current epoch details
 app.get('/get-current-epoch-details', async (req, res) => {
     try {
       const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
