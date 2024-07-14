@@ -183,8 +183,6 @@ app.post('/process-markdown', (req, res) => {
   res.json({ htmlContent });
 });
 
-const fetch = require('node-fetch');
-
 app.get('/get-market-price', async (req, res) => {
     const { currency } = req.query;
 
