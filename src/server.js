@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, '../dist')));
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const IAGON_API_KEY = process.env.IAGON_API_KEY;
+const IAGON_PASSWORD = process.env.IAGON_PASSWORD;
 const MAESTRO_API_KEY = process.env.MAESTRO_API_KEY;
 
 app.get('/config', (req, res) => {
@@ -178,22 +179,23 @@ app.get('/load-chat', async (req, res) => {
             method: 'GET',
             headers: {
                 'x-api-key': IAGON_API_KEY,
-                'Authorization': `Bearer ${IAGON_API_KEY}`
+                'Authorization': `Bearer ${IAGON_API_KEY}`,
+                'x-password': IAGON_PASSWORD
             }
         });
 
         if (!response.ok) {
-            const errorData = await response.text(); // Log the raw response text
+            const errorData = await response.text(); 
             console.error('Failed to load chat history:', errorData);
             return res.status(response.status).json({ error: errorData });
         }
 
-        const rawData = await response.text(); // Get the raw response text
+        const rawData = await response.text(); 
         console.log('Raw response data:', rawData);
 
         let data;
         try {
-            data = JSON.parse(rawData); // Attempt to parse the raw response as JSON
+            data = JSON.parse(rawData); 
         } catch (parseError) {
             console.error('Error parsing JSON:', parseError);
             return res.status(500).json({ error: 'Failed to parse chat history' });
@@ -201,7 +203,6 @@ app.get('/load-chat', async (req, res) => {
 
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
 
-        // Sort chat history by timestamp before sending
         const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
 
         console.log('Loaded chat history:', sortedChatHistory);
