@@ -185,24 +185,31 @@ app.get('/load-chat', async (req, res) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.text(); 
+            const errorData = await response.text(); // Log the raw response text
             console.error('Failed to load chat history:', errorData);
             return res.status(response.status).json({ error: errorData });
         }
 
-        const rawData = await response.text(); 
+        const rawData = await response.text(); // Get the raw response text
         console.log('Raw response data:', rawData);
 
         let data;
         try {
-            data = JSON.parse(rawData); 
+            data = JSON.parse(rawData); // Attempt to parse the raw response as JSON
         } catch (parseError) {
             console.error('Error parsing JSON:', parseError);
             return res.status(500).json({ error: 'Failed to parse chat history' });
         }
 
+        // Validate data before converting to buffer
+        if (!data || !data.data) {
+            console.error('Error: data is undefined or missing');
+            return res.status(500).json({ error: 'Invalid data received' });
+        }
+
         const chatHistory = JSON.parse(Buffer.from(data.data, 'base64').toString('utf-8'));
 
+        // Sort chat history by timestamp before sending
         const sortedChatHistory = chatHistory.sort((a, b) => b.timestamp - a.timestamp);
 
         console.log('Loaded chat history:', sortedChatHistory);
