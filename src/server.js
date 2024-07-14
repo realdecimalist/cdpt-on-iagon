@@ -150,7 +150,8 @@ app.get('/load-chat', async (req, res) => {
         const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${fileId}/download`, {
             method: 'GET',
             headers: {
-                'x-api-key': IAGON_API_KEY
+                'x-api-key': IAGON_API_KEY,
+                'Authorization': `Bearer ${IAGON_API_KEY}`
             }
         });
 
@@ -182,33 +183,38 @@ app.post('/process-markdown', (req, res) => {
   res.json({ htmlContent });
 });
 
-app.get('/get-ada-price', async (req, res) => {
-  const { currency } = req.query;
+const fetch = require('node-fetch');
 
-  if (!currency) {
-    return res.status(400).json({ error: 'Currency is required' });
-  }
+app.get('/get-market-price', async (req, res) => {
+    const { currency } = req.query;
 
-  const url = `https://api.maestro.com/market-price/ada?currency=${currency}`;
-  const headers = {
-    'Authorization': `Bearer ${MAESTRO_API_KEY}`,
-    'Content-Type': 'application/json'
-  };
-
-  try {
-    const response = await fetch(url, { headers });
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Failed to fetch ADA price:', data);
-      return res.status(response.status).json(data);
+    if (!currency) {
+        return res.status(400).json({ error: 'Currency is required' });
     }
 
-    res.json({ price: data.price });
-  } catch (error) {
-    console.error('Error fetching ADA price:', error);
-    res.status(500).json({ error: 'Failed to fetch ADA price' });
-  }
+    const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/ohlc/minswap/${currency}-IAG`;
+    const headers = {
+        'Accept': 'application/json'
+    };
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: headers
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error(`Failed to fetch ${currency} price:`, data);
+            return res.status(response.status).json(data);
+        }
+
+        res.json({ price: data.price });
+    } catch (error) {
+        console.error(`Error fetching ${currency} price:`, error);
+        res.status(500).json({ error: `Failed to fetch ${currency} price` });
+    }
 });
 
 // New endpoint to get current epoch details
