@@ -14,6 +14,7 @@ const port = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const WHITELISTED_USER_IDS = ['410954739547766795', '780451451100200971'];
 
 app.use(cors());
 app.use(express.json());
@@ -59,6 +60,22 @@ app.post('/discord/token', async (req, res) => {
       return res.status(tokenResponse.status).json(tokenData);
     }
 
+    // Fetch user info to get the user ID
+    const userResponse = await fetch('https://discord.com/api/users/@me', {
+      headers: {
+        'Authorization': `Bearer ${tokenData.access_token}`
+      }
+    });
+
+    const userData = await userResponse.json();
+    console.log('User data:', userData);
+
+    if (WHITELISTED_USER_IDS.includes(userData.id)) {
+      // If User is whitelisted, allow direct access
+      return res.json(tokenData);
+    }
+
+    // Proceed with the entitlements flow if not whitelisted
     res.json(tokenData);
   } catch (error) {
     console.error('Failed to fetch token:', error);
