@@ -184,6 +184,7 @@
         let clientId;
         let discordId;
         let threadId;
+        const WHITELISTED_USER_IDS = ['410954739547766795', '780451451100200971'];
 
         async function fetchConfig() {
             try {
@@ -227,6 +228,24 @@
 
                 localStorage.setItem('accessToken', accessToken);
 
+                const userResponse = await fetch('https://discord.com/api/users/@me', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const userData = await userResponse.json();
+                console.log('User Data:', userData);
+
+                if (WHITELISTED_USER_IDS.includes(userData.id)) {
+                    // User is whitelisted, allow direct access
+                    discordId = userData.id;
+                    localStorage.setItem('discordId', discordId);
+                    console.log(`User ${userData.id} is whitelisted.`);
+                    document.getElementById('login-button').classList.add('hidden');
+                    document.getElementById('chat-container').classList.remove('hidden');
+                    return;
+                }
+
                 const entitlementsResponse = await fetch(`https://fancy-pond-7060.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
                 console.log('Entitlements:', entitlements);
@@ -269,6 +288,7 @@
                 }
             }
         }
+
 
         function escapeHtml(unsafe) {
             return unsafe
