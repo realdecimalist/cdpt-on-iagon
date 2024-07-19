@@ -155,6 +155,9 @@
             background-color: #0056b3;
         }
     </style>
+    <script src="https://unpkg.com/react@18.2/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18.2/umd/react-dom.production.min.js" crossorigin></script>
+    <script type="module" src="https://unpkg.com/@dexhunterio/swaps@0.0.102/lib/umd/swaps.umd.js"></script>
 </head>
 <body>
     <div class="container">
@@ -179,6 +182,16 @@
                 <button class="button" onclick="getMarketPrice('ADA')">ADA/IAG Price</button>
             </div>
         </div>
+        <div id="dexhunter-root"></div>
+        <script type="module">
+            ReactDOM.render(
+                React.createElement(
+                    dexhunterSwap, 
+                    {"orderTypes":["SWAP","LIMIT"],"colors":{"background":"#0E0F12","containers":"#191B23","subText":"#88919E","mainText":"#FFFFFF","buttonText":"#FFFFFF","accent":"#007DFF"},"theme":"dark","width":450,"partnerCode":"fluxpointstudios,inc.6164647231713973366d3964387965646663663533796871356a357a73673073353877707a616d77657872787066656c677a3277676b3073396c396671633933747963387a75347a37687039646c736b61326b65773974726467386e73636a637133736b357333da39a3ee5e6b4b0d3255bfef95601890afd80709","partnerName":"FluxPointStudios,Inc."}
+                ),
+                document.getElementById('dexhunter-root')
+            );
+        </script>
     </div>
     <script>
         let clientId;
