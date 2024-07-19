@@ -154,6 +154,20 @@
         .copy-button:hover {
             background-color: #0056b3;
         }
+        .dhs-widget-button {
+            height: 56px; /* Adjust height */
+            width: 56px;  /* Adjust width */
+            border-radius: 50%;
+            background-color: #0E0F12; /* Background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .dhs-widget-button img {
+            height: 100%;
+            width: 100%;
+        }
     </style>
     <script src="https://unpkg.com/react@18.2/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18.2/umd/react-dom.production.min.js" crossorigin></script>
@@ -183,16 +197,52 @@
             </div>
         </div>
         <div id="dexhunter-root"></div>
-        <script type="module">
-            ReactDOM.render(
-                React.createElement(
-                    dexhunterSwap, 
-                    {"orderTypes":["SWAP","LIMIT"],"colors":{"background":"#0E0F12","containers":"#191B23","subText":"#88919E","mainText":"#FFFFFF","buttonText":"#FFFFFF","accent":"#007DFF"},"theme":"dark","width":450,"partnerCode":"fluxpointstudios,inc.6164647231713973366d3964387965646663663533796871356a357a73673073353877707a616d77657872787066656c677a3277676b3073396c396671633933747963387a75347a37687039646c736b61326b65773974726467386e73636a637133736b357333da39a3ee5e6b4b0d3255bfef95601890afd80709","partnerName":"FluxPointStudios,Inc."}
-                ),
-                document.getElementById('dexhunter-root')
-            );
-        </script>
     </div>
+    <script type="module">
+        const { useState } = React;
+
+        const WidgetButton = () => {
+            const [showWidget, setShowWidget] = useState(false);
+
+            return (
+                <div>
+                    {!showWidget && (
+                        <div 
+                            className="dhs-widget-button dhs-h-14 dhs-w-14 dhs-rounded-full dhs-bg-background dhs-flex dhs-items-center dhs-justify-center dhs-cursor-pointer"
+                            onClick={() => setShowWidget(true)}
+                        >
+                            <img src="https://storage.googleapis.com/dexhunter-images/public/hunt-token.svg" className="dhs-w-full dhs-h-full" alt="DexHunter" />
+                        </div>
+                    )}
+                    {showWidget && (
+                        React.createElement(
+                            dexhunterSwap, 
+                            {
+                                "orderTypes": ["SWAP", "LIMIT"],
+                                "colors": {
+                                    "background": "#0E0F12",
+                                    "containers": "#191B23",
+                                    "subText": "#88919E",
+                                    "mainText": "#FFFFFF",
+                                    "buttonText": "#FFFFFF",
+                                    "accent": "#007DFF"
+                                },
+                                "theme": "dark",
+                                "width": 450,
+                                "partnerCode": "fluxpointstudios,inc.6164647231713973366d3964387965646663663533796871356a357a73673073353877707a616d77657872787066656c677a3277676b3073396c396671633933747963387a75347a37687039646c736b61326b65773974726467386e73636a637133736b357333da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                                "partnerName": "FluxPointStudios,Inc."
+                            }
+                        )
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(
+            <WidgetButton />,
+            document.getElementById('dexhunter-root')
+        );
+    </script>
     <script>
         let clientId;
         let discordId;
@@ -589,10 +639,10 @@
             }
         }
 
-      //  document.addEventListener('DOMContentLoaded', () => {
-      //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
-      //      loadPreviousChat(fileId);
-      //  });
+        // document.addEventListener('DOMContentLoaded', () => {
+        //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
+        //      loadPreviousChat(fileId);
+        //  });
 
         window.onload = () => {
             localStorage.removeItem('discordId');
