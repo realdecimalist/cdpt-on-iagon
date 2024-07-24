@@ -577,6 +577,44 @@
             }
         }
 
+        async function getLatestBitcoinBlock() {
+            console.log('Get Latest Bitcoin Block button clicked.');
+            try {
+                const response = await fetch('/get-latest-bitcoin-block');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch latest Bitcoin block:', errorData);
+                    addMessageToChat('bot', 'Failed to fetch latest Bitcoin block');
+                    return;
+                }
+                const data = await response.json();
+                const blockDetails = `Latest Bitcoin Block:\n${JSON.stringify(data, null, 2)}`;
+                addMessageToChat('bot', blockDetails);
+            } catch (error) {
+                console.error('Error fetching latest Bitcoin block:', error);
+                addMessageToChat('bot', 'Error fetching latest Bitcoin block');
+            }
+        }
+
+        async function getBitcoinChainInfo() {
+            console.log('Get Bitcoin Chain Info button clicked.');
+            try {
+                const response = await fetch('/get-bitcoin-chain-info');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch Bitcoin chain info:', errorData);
+                    addMessageToChat('bot', 'Failed to fetch Bitcoin chain info');
+                    return;
+                }
+                const data = await response.json();
+                const chainInfo = `Bitcoin Chain Info:\n${JSON.stringify(data, null, 2)}`;
+                addMessageToChat('bot', chainInfo);
+            } catch (error) {
+                console.error('Error fetching Bitcoin chain info:', error);
+                addMessageToChat('bot', 'Error fetching Bitcoin chain info');
+            }
+        }
+        
       //  document.addEventListener('DOMContentLoaded', () => {
       //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
       //      loadPreviousChat(fileId);
