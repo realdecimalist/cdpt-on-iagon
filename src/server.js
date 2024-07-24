@@ -300,7 +300,8 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
     maxBodyLength: Infinity,
     url: 'https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest',
     headers: {
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'api-key': MAESTRO_API_KEY
     }
   };
 
@@ -321,7 +322,8 @@ app.get('/get-bitcoin-chain-info', async (req, res) => {
     maxBodyLength: Infinity,
     url: 'https://xbt-mainnet.gomaestro-api.org/v0/general/info',
     headers: {
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'api-key': MAESTRO_API_KEY
     }
   };
 
