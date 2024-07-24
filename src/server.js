@@ -26,7 +26,9 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const IAGON_API_KEY = process.env.IAGON_API_KEY;
 const IAGON_PASSWORD = process.env.IAGON_PASSWORD;
-const MAESTRO_API_KEY = process.env.MAESTRO_API_KEY;
+const MAESTRO_BITCOIN_API_KEY = process.env.MAESTRO_BITCOIN_API_KEY;
+const MAESTRO_CARDANO_API_KEY = process.env.MAESTRO_CARDANO_API_KEY;
+const MAESTRO_DOGECOIN_API_KEY = process.env.MAESTRO_DOGECOIN_API_KEY;
 
 app.get('/config', (req, res) => {
   res.json({ clientId: CLIENT_ID });
@@ -244,7 +246,7 @@ app.get('/get-market-price', async (req, res) => {
   const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/stats/minswap/${currency}-IAG`;
   const headers = {
     'Accept': 'application/json',
-    'api-key': MAESTRO_API_KEY
+    'api-key': MAESTRO_CARDANO_API_KEY
   };
 
   try {
@@ -275,7 +277,7 @@ app.get('/get-current-epoch-details', async (req, res) => {
     const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
       headers: {
         'Accept': 'application/json',
-        'api-key': MAESTRO_API_KEY
+        'api-key': MAESTRO_CARDANOAPI_KEY
       }
     });
 
@@ -299,7 +301,7 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
     const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest', {
       headers: {
         'Accept': 'application/json',
-        'api-key': MAESTRO_API_KEY
+        'api-key': MAESTRO_BITCOIN_API_KEY
       }
     });
 
@@ -323,7 +325,7 @@ app.get('/get-bitcoin-chain-info', async (req, res) => {
     const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/general/info', {
       headers: {
         'Accept': 'application/json',
-        'api-key': MAESTRO_API_KEY
+        'api-key': MAESTRO_BITCOIN_API_KEY
       }
     });
 
@@ -338,6 +340,54 @@ app.get('/get-bitcoin-chain-info', async (req, res) => {
   } catch (error) {
     console.error('Error fetching Bitcoin chain info:', error);
     res.status(500).json({ error: 'Failed to fetch Bitcoin chain info' });
+  }
+});
+
+// New endpoint to get the latest Dogecoin block
+app.get('/get-latest-dogecoin-block', async (req, res) => {
+  try {
+    const response = await fetch('https://xdg-mainnet.gomaestro-api.org/v0/blocks/latest', {
+      headers: {
+        'Accept': 'application/json',
+        'api-key': MAESTRO_DOGECOIN_API_KEY
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch latest Dogecoin block:', errorData);
+      return res.status(response.status).json(errorData);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching latest Dogecoin block:', error);
+    res.status(500).json({ error: 'Failed to fetch latest Dogecoin block' });
+  }
+});
+
+// New endpoint to get general Dogecoin chain info
+app.get('/get-dogecoin-chain-info', async (req, res) => {
+  try {
+    const response = await fetch('https://xdg-mainnet.gomaestro-api.org/v0/general/info', {
+      headers: {
+        'Accept': 'application/json',
+        'api-key': MAESTRO_DOGECOIN_API_KEY
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch Dogecoin chain info:', errorData);
+      return res.status(response.status).json(errorData);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching Dogecoin chain info:', error);
+    res.status(500).json({ error: 'Failed to fetch Dogecoin chain info' });
   }
 });
 
