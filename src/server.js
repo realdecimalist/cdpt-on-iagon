@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import FormData from 'form-data';
 import { marked } from 'marked';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -157,77 +158,75 @@ app.post('/save-chat', async (req, res) => {
 });
 
 app.get('/load-chat', async (req, res) => {
-    try {
-        const { fileId } = req.query;
-        if (!fileId) {
-            console.error('Error: fileId is required');
-            return res.status(400).json({ error: 'fileId is required' });
-        }
-
-        console.log('Loading chat history with file ID:', fileId);
-
-        // Fetch the list of files
-        const listResponse = await fetch('https://gw.iagon.com/api/v2/storage/directory?visibility=public', {
-            method: 'GET',
-            headers: {
-                'x-api-key': IAGON_API_KEY,
-                'Authorization': `Bearer ${IAGON_API_KEY}`
-            }
-        });
-
-        if (!listResponse.ok) {
-            const errorData = await listResponse.json();
-            console.error('Failed to fetch file list:', errorData);
-            return res.status(listResponse.status).json(errorData);
-        }
-
-        const listData = await listResponse.json();
-        const files = listData.data.files;
-
-        // Identify the most recent file
-        const mostRecentFile = files.reduce((latest, file) => {
-            return new Date(file.updated_at) > new Date(latest.updated_at) ? file : latest;
-        });
-
-        console.log('Most recent file ID:', mostRecentFile._id);
-
-        // Fetch the most recent file
-        const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${mostRecentFile._id}/download`, {
-            method: 'GET',
-            headers: {
-                'x-api-key': IAGON_API_KEY,
-                'Authorization': `Bearer ${IAGON_API_KEY}`,
-                'x-password': IAGON_PASSWORD
-            }
-        });
-
-        if (!response.ok) {
-            const errorData = await response.text(); // Log the raw response text
-            console.error('Failed to load chat history:', errorData);
-            return res.status(response.status).json({ error: errorData });
-        }
-
-        const rawData = await response.text(); // Get the raw response text
-        console.log('Raw response data:', rawData);
-
-        let data;
-        try {
-            data = JSON.parse(rawData); // Attempt to parse the raw response as JSON
-            console.log('Parsed data:', data);
-        } catch (parseError) {
-            console.error('Error parsing JSON:', parseError);
-            return res.status(500).json({ error: 'Failed to parse chat history' });
-        }
-
-        // Directly return the parsed data
-        res.json(data);
-    } catch (error) {
-        console.error('Error loading chat history:', error);
-        res.status(500).json({ error: 'Failed to load chat history' });
+  try {
+    const { fileId } = req.query;
+    if (!fileId) {
+      console.error('Error: fileId is required');
+      return res.status(400).json({ error: 'fileId is required' });
     }
+
+    console.log('Loading chat history with file ID:', fileId);
+
+    // Fetch the list of files
+    const listResponse = await fetch('https://gw.iagon.com/api/v2/storage/directory?visibility=public', {
+      method: 'GET',
+      headers: {
+        'x-api-key': IAGON_API_KEY,
+        'Authorization': `Bearer ${IAGON_API_KEY}`
+      }
+    });
+
+    if (!listResponse.ok) {
+      const errorData = await listResponse.json();
+      console.error('Failed to fetch file list:', errorData);
+      return res.status(listResponse.status).json(errorData);
+    }
+
+    const listData = await listResponse.json();
+    const files = listData.data.files;
+
+    // Identify the most recent file
+    const mostRecentFile = files.reduce((latest, file) => {
+      return new Date(file.updated_at) > new Date(latest.updated_at) ? file : latest;
+    });
+
+    console.log('Most recent file ID:', mostRecentFile._id);
+
+    // Fetch the most recent file
+    const response = await fetch(`https://gw.iagon.com/api/v2/storage/file/${mostRecentFile._id}/download`, {
+      method: 'GET',
+      headers: {
+        'x-api-key': IAGON_API_KEY,
+        'Authorization': `Bearer ${IAGON_API_KEY}`,
+        'x-password': IAGON_PASSWORD
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text(); // Log the raw response text
+      console.error('Failed to load chat history:', errorData);
+      return res.status(response.status).json({ error: errorData });
+    }
+
+    const rawData = await response.text(); // Get the raw response text
+    console.log('Raw response data:', rawData);
+
+    let data;
+    try {
+      data = JSON.parse(rawData); // Attempt to parse the raw response as JSON
+      console.log('Parsed data:', data);
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);
+      return res.status(500).json({ error: 'Failed to parse chat history' });
+    }
+
+    // Directly return the parsed data
+    res.json(data);
+  } catch (error) {
+    console.error('Error loading chat history:', error);
+    res.status(500).json({ error: 'Failed to load chat history' });
+  }
 });
-
-
 
 app.post('/process-markdown', (req, res) => {
   const { markdownText } = req.body;
@@ -236,63 +235,105 @@ app.post('/process-markdown', (req, res) => {
 });
 
 app.get('/get-market-price', async (req, res) => {
-    const { currency } = req.query;
+  const { currency } = req.query;
 
-    if (!currency) {
-        return res.status(400).json({ error: 'Currency is required' });
+  if (!currency) {
+    return res.status(400).json({ error: 'Currency is required' });
+  }
+
+  const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/stats/minswap/${currency}-IAG`;
+  const headers = {
+    'Accept': 'application/json',
+    'api-key': MAESTRO_API_KEY
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headers
+    });
+
+    const data = await response.json();
+
+    console.log('Response Data:', data);
+    if (!response.ok) {
+      console.error(`Failed to fetch ${currency} price:`, data);
+      return res.status(response.status).json(data);
     }
 
-    const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/stats/minswap/${currency}-IAG`;
-    const headers = {
-        'Accept': 'application/json',
-        'api-key': MAESTRO_API_KEY
-    };
-
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: headers
-        });
-
-        const data = await response.json();
-
-        console.log('Response Data:', data);
-        if (!response.ok) {
-            console.error(`Failed to fetch ${currency} price:`, data);
-            return res.status(response.status).json(data);
-        }
-
-        // Extract the price from the response data
-        const price = data['latest_price']?.['coin_a_latest_price'] || 'Price not found';
-        res.json({ price: price });
-    } catch (error) {
-        console.error(`Error fetching ${currency} price:`, error);
-        res.status(500).json({ error: `Failed to fetch ${currency} price` });
-    }
+    // Extract the price from the response data
+    const price = data['latest_price']?.['coin_a_latest_price'] || 'Price not found';
+    res.json({ price: price });
+  } catch (error) {
+    console.error(`Error fetching ${currency} price:`, error);
+    res.status(500).json({ error: `Failed to fetch ${currency} price` });
+  }
 });
 
 app.get('/get-current-epoch-details', async (req, res) => {
-    try {
-      const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
-        headers: {
-          'Accept': 'application/json',
-          'api-key': MAESTRO_API_KEY
-        }
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to fetch current epoch details:', errorData);
-        return res.status(response.status).json(errorData);
+  try {
+    const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
+      headers: {
+        'Accept': 'application/json',
+        'api-key': MAESTRO_API_KEY
       }
-  
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error('Error fetching current epoch details:', error);
-      res.status(500).json({ error: 'Failed to fetch current epoch details' });
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch current epoch details:', errorData);
+      return res.status(response.status).json(errorData);
     }
-  });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching current epoch details:', error);
+    res.status(500).json({ error: 'Failed to fetch current epoch details' });
+  }
+});
+
+// New endpoint to get the latest Bitcoin block
+app.get('/get-latest-bitcoin-block', async (req, res) => {
+  const config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest',
+    headers: {
+      'Accept': 'application/json'
+    }
+  };
+
+  try {
+    const response = await axios(config);
+    console.log('Latest Bitcoin block:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching latest Bitcoin block:', error);
+    res.status(500).json({ error: 'Failed to fetch latest Bitcoin block' });
+  }
+});
+
+// New endpoint to get general Bitcoin chain info
+app.get('/get-bitcoin-chain-info', async (req, res) => {
+  const config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'https://xbt-mainnet.gomaestro-api.org/v0/general/info',
+    headers: {
+      'Accept': 'application/json'
+    }
+  };
+
+  try {
+    const response = await axios(config);
+    console.log('Bitcoin chain info:', response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching Bitcoin chain info:', error);
+    res.status(500).json({ error: 'Failed to fetch Bitcoin chain info' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running at https://localhost:${port}`);
