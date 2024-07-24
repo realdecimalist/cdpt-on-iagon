@@ -295,20 +295,22 @@ app.get('/get-current-epoch-details', async (req, res) => {
 
 // New endpoint to get the latest Bitcoin block
 app.get('/get-latest-bitcoin-block', async (req, res) => {
-  const config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest',
-    headers: {
-      'Accept': 'application/json',
-      'api-key': MAESTRO_API_KEY
-    }
-  };
-
   try {
-    const response = await axios(config);
-    console.log('Latest Bitcoin block:', response.data);
-    res.json(response.data);
+    const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest', {
+      headers: {
+        'Accept': 'application/json',
+        'api-key': MAESTRO_API_KEY
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch latest Bitcoin block:', errorData);
+      return res.status(response.status).json(errorData);
+    }
+
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
     console.error('Error fetching latest Bitcoin block:', error);
     res.status(500).json({ error: 'Failed to fetch latest Bitcoin block' });
@@ -317,20 +319,22 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
 
 // New endpoint to get general Bitcoin chain info
 app.get('/get-bitcoin-chain-info', async (req, res) => {
-  const config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'https://xbt-mainnet.gomaestro-api.org/v0/general/info',
-    headers: {
-      'Accept': 'application/json',
-      'api-key': MAESTRO_API_KEY
-    }
-  };
-
   try {
-    const response = await axios(config);
-    console.log('Bitcoin chain info:', response.data);
-    res.json(response.data);
+    const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/general/info', {
+      headers: {
+        'Accept': 'application/json',
+        'api-key': MAESTRO_API_KEY
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to fetch Bitcoin chain info:', errorData);
+      return res.status(response.status).json(errorData);
+    }
+
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
     console.error('Error fetching Bitcoin chain info:', error);
     res.status(500).json({ error: 'Failed to fetch Bitcoin chain info' });
