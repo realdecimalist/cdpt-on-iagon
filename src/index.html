@@ -179,6 +179,8 @@
                 <button class="button" onclick="getMarketPrice('Cardano Native Token ADA')">Cardano Native Token ADA/IAG Price</button>
                 <button class="button" onclick="getLatestBitcoinBlock()">Get Latest Bitcoin Block</button>
                 <button class="button" onclick="getBitcoinChainInfo()">Get Bitcoin Chain Info</button>
+                <button class="button" onclick="getLatestDogecoinBlock()">Get Latest Dogecoin Block</button>
+                <button class="button" onclick="getDogecoinChainInfo()">Get Dogecoin Chain Info</button>
             </div>
         </div>
     </div>
@@ -612,6 +614,44 @@
             } catch (error) {
                 console.error('Error fetching Bitcoin chain info:', error);
                 addMessageToChat('bot', 'Error fetching Bitcoin chain info');
+            }
+        }
+
+        async function getLatestDogecoinBlock() {
+            console.log('Get Latest Dogecoin Block button clicked.');
+            try {
+                const response = await fetch('/get-latest-dogecoin-block');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch latest Dogecoin block:', errorData);
+                    addMessageToChat('bot', 'Failed to fetch latest Dogecoin block');
+                    return;
+                }
+                const data = await response.json();
+                const blockDetails = `Latest Dogecoin Block:\n${JSON.stringify(data, null, 2)}`;
+                addMessageToChat('bot', blockDetails);
+            } catch (error) {
+                console.error('Error fetching latest Dogecoin block:', error);
+                addMessageToChat('bot', 'Error fetching latest Dogecoin block');
+            }
+        }
+
+        async function getDogecoinChainInfo() {
+            console.log('Get Dogecoin Chain Info button clicked.');
+            try {
+                const response = await fetch('/get-dogecoin-chain-info');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Failed to fetch Dogecoin chain info:', errorData);
+                    addMessageToChat('bot', 'Failed to fetch Dogecoin chain info');
+                    return;
+                }
+                const data = await response.json();
+                const chainInfo = `Dogecoin Chain Info:\n${JSON.stringify(data, null, 2)}`;
+                addMessageToChat('bot', chainInfo);
+            } catch (error) {
+                console.error('Error fetching Dogecoin chain info:', error);
+                addMessageToChat('bot', 'Error fetching Dogecoin chain info');
             }
         }
 
