@@ -270,13 +270,13 @@ app.post('/process-markdown', (req, res) => {
 });
 
 app.get('/get-market-price', async (req, res) => {
-  const { currency } = req.query;
+  const { tokenA, tokenB } = req.query;
 
-  if (!currency) {
-    return res.status(400).json({ error: 'Currency is required' });
+  if (!tokenA || !tokenB) {
+    return res.status(400).json({ error: 'Both tokenA and tokenB are required' });
   }
 
-  const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/stats/minswap/${currency}-IAG`;
+  const url = `https://mainnet.gomaestro-api.org/v1/markets/dexs/stats/minswap/${tokenA}-${tokenB}`;
   const headers = {
     'Accept': 'application/json',
     'api-key': MAESTRO_CARDANO_API_KEY
@@ -292,7 +292,7 @@ app.get('/get-market-price', async (req, res) => {
 
     console.log('Response Data:', data);
     if (!response.ok) {
-      console.error(`Failed to fetch ${currency} price:`, data);
+      console.error(`Failed to fetch ${tokenA}-${tokenB} price:`, data);
       return res.status(response.status).json(data);
     }
 
@@ -300,10 +300,11 @@ app.get('/get-market-price', async (req, res) => {
     const price = data['latest_price']?.['coin_a_latest_price'] || 'Price not found';
     res.json({ price: price });
   } catch (error) {
-    console.error(`Error fetching ${currency} price:`, error);
-    res.status(500).json({ error: `Failed to fetch ${currency} price` });
+    console.error(`Error fetching ${tokenA}-${tokenB} price:`, error);
+    res.status(500).json({ error: `Failed to fetch ${tokenA}-${tokenB} price` });
   }
 });
+
 
 app.get('/get-current-epoch-details', async (req, res) => {
   try {

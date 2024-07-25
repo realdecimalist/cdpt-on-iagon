@@ -190,8 +190,8 @@
 <body>
     <div class="container">
         <div class="toolbar">
-            <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
-            <button class="button" onclick="getMarketPrice('Cardano Native Token ADA')">Cardano Native Token ADA/IAG Price</button>
+            <button class="button" onclick="getCurrentEpochDetails()">Get Current Cardano Epoch Details</button>
+            <button class="button" id="get-price-button">Get Cardano Token Market Price</button>
             <button class="button" onclick="getLatestBitcoinBlock()">Get Latest Bitcoin Block</button>
             <button class="button" onclick="getBitcoinChainInfo()">Get Bitcoin Chain Info</button>
             <button class="button" onclick="getLatestDogecoinBlock()">Get Latest Dogecoin Block</button>
@@ -586,32 +586,43 @@
         }
 
 
-        async function getMarketPrice(currency) {
-            try {
-                const chatBox = document.getElementById('chat-box');
-                const typingIndicator = document.createElement('div');
-                typingIndicator.className = 'chat-message bot';
-                typingIndicator.textContent = `Fetching ${currency} price...`;
-                typingIndicator.id = 'typingIndicator';
-                chatBox.appendChild(typingIndicator);
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                const response = await fetch(`/get-market-price?currency=${currency}`);
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error(`Failed to fetch ${currency} price:`, errorData);
-                    addMessageToChat('bot', `Failed to fetch ${currency} price`);
-                    return;
-                }
-
-                const data = await response.json();
-                const priceDetails = `${currency} Price: ${data.price}`;
-                addMessageToChat('bot', priceDetails);
-                chatBox.removeChild(typingIndicator);
-            } catch (error) {
-                console.error(`Error fetching ${currency} price:`, error);
-                addMessageToChat('bot', `Error fetching ${currency} price`);
+        async function getMarketPrice() {
+            const tokenA = 'ADA'; 
+            const tokenB = prompt("Please enter the ticker for the second token:");
+            if (!tokenB) {
+            alert("You need to enter a ticker to proceed.");
+            return;
             }
+
+            console.log(`Fetching market price for ${tokenA}-${tokenB}...`);
+            try {
+            const response = await fetch(`/get-market-price?tokenA=${tokenA}&tokenB=${tokenB}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error(`Failed to fetch ${tokenA}-${tokenB} price:`, errorData);
+                addMessageToChat('bot', `Failed to fetch ${tokenA}-${tokenB} price`);
+                return;
+            }
+
+            const data = await response.json();
+            const priceDetails = `Market Price for ${tokenA}-${tokenB}:\n${JSON.stringify(data, null, 2)}`;
+            addMessageToChat('bot', priceDetails);
+            } catch (error) {
+            console.error(`Error fetching ${tokenA}-${tokenB} price:`, error);
+            addMessageToChat('bot', `Error fetching ${tokenA}-${tokenB} price`);
+            }
+        }
+
+        document.querySelector("#get-price-button").addEventListener("click", () => {
+            getMarketPrice();
+        });
+
+        function addMessageToChat(sender, message) {
+            const chatBox = document.getElementById('chat-box');
+            const chatMessage = document.createElement('div');
+            chatMessage.classList.add('chat-message', sender);
+            chatMessage.innerText = message;
+            chatBox.appendChild(chatMessage);
         }
 
         async function getLatestBitcoinBlock() {
