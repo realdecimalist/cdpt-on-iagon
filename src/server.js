@@ -159,6 +159,39 @@ app.post('/save-chat', async (req, res) => {
   }
 });
 
+// Function to save chat history
+async function saveChatHistory(discordId, chatHistory) {
+  try {
+    const formData = new FormData();
+    formData.append('file', Buffer.from(JSON.stringify(chatHistory)), `${discordId}_chatHistory.json`);
+    formData.append('filename', `${discordId}_chatHistory.json`);
+    formData.append('visibility', 'public');
+
+    const response = await fetch('https://gw.iagon.com/api/v2/storage/upload', {
+      method: 'POST',
+      headers: {
+        'x-api-key': IAGON_API_KEY
+      },
+      body: formData
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      console.error('Failed to save chat history:', data);
+      return;
+    }
+
+    console.log('Chat history saved:', data);
+  } catch (error) {
+    console.error('Error saving chat history:', error);
+  }
+}
+
+// Example function to add a message to chat history
+function addMessageToChatHistory(chatHistory, message, role) {
+  chatHistory.push({ role, content: message });
+}
+
 app.get('/load-chat', async (req, res) => {
   try {
     const { fileId } = req.query;
@@ -277,7 +310,7 @@ app.get('/get-current-epoch-details', async (req, res) => {
     const response = await fetch('https://mainnet.gomaestro-api.org/v1/epochs/current', {
       headers: {
         'Accept': 'application/json',
-        'api-key': MAESTRO_CARDANOAPI_KEY
+        'api-key': MAESTRO_CARDANO_API_KEY
       }
     });
 
@@ -296,8 +329,14 @@ app.get('/get-current-epoch-details', async (req, res) => {
 });
 
 // New endpoint to get the latest Bitcoin block
-app.get('/get-latest-bitcoin-block', async (req, res) => {
+app.post('/get-latest-bitcoin-block', async (req, res) => {
   try {
+    const { discordId, chatHistory } = req.body;
+
+    if (!discordId || !chatHistory) {
+      return res.status(400).json({ error: 'discordId and chatHistory are required' });
+    }
+
     console.log('Fetching the latest Bitcoin block info...');
     const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest', {
       headers: {
@@ -309,14 +348,25 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Failed to fetch latest Bitcoin block:', errorData);
+      addMessageToChatHistory(chatHistory, 'Failed to fetch latest Bitcoin block.', 'bot');
+      await saveChatHistory(discordId, chatHistory);
       return res.status(response.status).json(errorData);
     }
 
     const data = await response.json();
     console.log('Latest Bitcoin block data:', data);
+
+    // Add bot response to chat history
+    addMessageToChatHistory(chatHistory, `Latest Bitcoin block data: ${JSON.stringify(data)}`, 'bot');
+
+    // Save updated chat history
+    await saveChatHistory(discordId, chatHistory);
+
     res.json(data);
   } catch (error) {
     console.error('Error fetching latest Bitcoin block:', error);
+    addMessageToChatHistory(chatHistory, 'Error fetching latest Bitcoin block.', 'bot');
+    await saveChatHistory(discordId, chatHistory);
     res.status(500).json({ error: 'Failed to fetch latest Bitcoin block' });
   }
 });
