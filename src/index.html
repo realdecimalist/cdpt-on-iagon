@@ -731,7 +731,8 @@
             if (typeof window.ethereum !== 'undefined') {
                 try {
                     // Request account access if needed
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const walletAddress = accounts[0];
 
                     // Check if the network is Wanchain
                     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
@@ -773,6 +774,9 @@
                             }
                         }
                     }
+
+                    // Update button text with the wallet address
+                    document.getElementById('connect-wanchain-wallet').innerText = `Connected ${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
                 } catch (error) {
                     console.error(error);
                 }
