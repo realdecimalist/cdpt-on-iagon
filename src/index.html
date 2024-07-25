@@ -727,61 +727,73 @@
             }
         }
 
+        let isConnected = false;
+        let connectedAddress = '';
+
         document.getElementById('connect-wanchain-wallet').addEventListener('click', async () => {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    // Request account access if needed
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const walletAddress = accounts[0];
+            if (!isConnected) {
+                if (typeof window.ethereum !== 'undefined') {
+                    try {
+                        // Request account access if needed
+                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        const walletAddress = accounts[0];
+                        connectedAddress = walletAddress;
 
-                    // Check if the network is Wanchain
-                    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-                    const wanchainChainId = '0x378'; // Wanchain chain ID in hexadecimal
+                        // Check if the network is Wanchain
+                        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                        const wanchainChainId = '0x378'; // Wanchain chain ID in hexadecimal
 
-                    if (chainId !== wanchainChainId) {
-                        // Switch to Wanchain network
-                        try {
-                            await window.ethereum.request({
-                                method: 'wallet_switchEthereumChain',
-                                params: [{ chainId: wanchainChainId }],
-                            });
-                        } catch (switchError) {
-                            // This error code indicates that the chain has not been added to Metamask
-                            if (switchError.code === 4902) {
-                                try {
-                                    await window.ethereum.request({
-                                        method: 'wallet_addEthereumChain',
-                                        params: [
-                                            {
-                                                chainId: wanchainChainId,
-                                                chainName: 'Wanchain',
-                                                rpcUrls: ['https://gwan-ssl.wandevs.org:56891/'],
-                                                nativeCurrency: {
-                                                    name: 'Wancoin',
-                                                    symbol: 'WAN',
-                                                    decimals: 18,
+                        if (chainId !== wanchainChainId) {
+                            // Switch to Wanchain network
+                            try {
+                                await window.ethereum.request({
+                                    method: 'wallet_switchEthereumChain',
+                                    params: [{ chainId: wanchainChainId }],
+                                });
+                            } catch (switchError) {
+                                // This error code indicates that the chain has not been added to Metamask
+                                if (switchError.code === 4902) {
+                                    try {
+                                        await window.ethereum.request({
+                                            method: 'wallet_addEthereumChain',
+                                            params: [
+                                                {
+                                                    chainId: wanchainChainId,
+                                                    chainName: 'Wanchain',
+                                                    rpcUrls: ['https://gwan-ssl.wandevs.org:56891/'],
+                                                    nativeCurrency: {
+                                                        name: 'Wancoin',
+                                                        symbol: 'WAN',
+                                                        decimals: 18,
+                                                    },
+                                                    blockExplorerUrls: ['https://www.wanscan.org'],
                                                 },
-                                                blockExplorerUrls: ['https://www.wanscan.org'],
-                                            },
-                                        ],
-                                    });
-                                } catch (addError) {
-                                    console.error(addError);
-                                    alert('Failed to add Wanchain network. Please add it manually using chainlist.org and search for Wanchain.');
+                                            ],
+                                        });
+                                    } catch (addError) {
+                                        console.error(addError);
+                                        alert('Failed to add Wanchain network. Please add it manually using chainlist.org and search for Wanchain.');
+                                    }
+                                } else {
+                                    console.error(switchError);
                                 }
-                            } else {
-                                console.error(switchError);
                             }
                         }
-                    }
 
-                    // Update button text with the wallet address
-                    document.getElementById('connect-wanchain-wallet').innerText = `Connected ${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
-                } catch (error) {
-                    console.error(error);
+                        // Update button text with the wallet address
+                        document.getElementById('connect-wanchain-wallet').innerText = `Connected ${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`;
+                        isConnected = true;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } else {
+                    alert('Metamask is not installed. Please install Metamask and try again.');
                 }
             } else {
-                alert('Metamask is not installed. Please install Metamask and try again.');
+                // Disconnect the wallet
+                connectedAddress = '';
+                isConnected = false;
+                document.getElementById('connect-wanchain-wallet').innerText = 'Connect Wanchain Wallet';
             }
         });
 
