@@ -196,6 +196,7 @@
             <button class="button" onclick="getBitcoinChainInfo()">Get Bitcoin Chain Info</button>
             <button class="button" onclick="getLatestDogecoinBlock()">Get Latest Dogecoin Block</button>
             <button class="button" onclick="getDogecoinChainInfo()">Get Dogecoin Chain Info</button>
+            <button id="connect-wanchain-wallet">Connect Wanchain Wallet</button>
         </div>
         <div class="content">
             <img id="logo" src="https://i.ibb.co/rsvpknc/FPS-Logo-Color-only.png" alt="Your Logo">
@@ -725,6 +726,61 @@
                 addMessageToChat('bot', 'Warning: Failed to save chat history. You can continue chatting, but the conversation will not be saved.');
             }
         }
+
+        document.getElementById('connect-wanchain-wallet').addEventListener('click', async () => {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    // Request account access if needed
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                    // Check if the network is Wanchain
+                    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                    const wanchainChainId = '0x378'; // Wanchain chain ID in hexadecimal
+
+                    if (chainId !== wanchainChainId) {
+                        // Switch to Wanchain network
+                        try {
+                            await window.ethereum.request({
+                                method: 'wallet_switchEthereumChain',
+                                params: [{ chainId: wanchainChainId }],
+                            });
+                        } catch (switchError) {
+                            // This error code indicates that the chain has not been added to Metamask
+                            if (switchError.code === 4902) {
+                                try {
+                                    await window.ethereum.request({
+                                        method: 'wallet_addEthereumChain',
+                                        params: [
+                                            {
+                                                chainId: wanchainChainId,
+                                                chainName: 'Wanchain',
+                                                rpcUrls: ['https://gwan-ssl.wandevs.org:56891/'],
+                                                nativeCurrency: {
+                                                    name: 'Wancoin',
+                                                    symbol: 'WAN',
+                                                    decimals: 18,
+                                                },
+                                                blockExplorerUrls: ['https://www.wanscan.org'],
+                                            },
+                                        ],
+                                    });
+                                } catch (addError) {
+                                    console.error(addError);
+                                    alert('Failed to add Wanchain network. Please add it manually using chainlist.org and search for Wanchain.');
+                                }
+                            } else {
+                                console.error(switchError);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                alert('Metamask is not installed. Please install Metamask and try again.');
+            }
+        });
+
 
         window.onload = () => {
             localStorage.removeItem('discordId');
