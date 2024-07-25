@@ -331,12 +331,6 @@ app.get('/get-current-epoch-details', async (req, res) => {
 // New endpoint to get the latest Bitcoin block
 app.get('/get-latest-bitcoin-block', async (req, res) => {
   try {
-    const { discordId, chatHistory } = req.body;
-
-    if (!discordId || !chatHistory) {
-      return res.status(400).json({ error: 'discordId and chatHistory are required' });
-    }
-
     console.log('Fetching the latest Bitcoin block info...');
     const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest', {
       headers: {
@@ -347,27 +341,15 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Failed to fetch latest Bitcoin block:', errorData);
-      addMessageToChatHistory(chatHistory, 'Failed to fetch latest Bitcoin block.', 'bot');
-      await saveChatHistory(discordId, chatHistory);
+      console.error('Failed to fetch latest Bitcoin block info:', errorData);
       return res.status(response.status).json(errorData);
     }
 
     const data = await response.json();
-    console.log('Latest Bitcoin block data:', data);
-
-    // Add bot response to chat history
-    addMessageToChatHistory(chatHistory, `Latest Bitcoin block data: ${JSON.stringify(data)}`, 'bot');
-
-    // Save updated chat history
-    await saveChatHistory(discordId, chatHistory);
-
     res.json(data);
   } catch (error) {
-    console.error('Error fetching latest Bitcoin block:', error);
-    addMessageToChatHistory(chatHistory, 'Error fetching latest Bitcoin block.', 'bot');
-    await saveChatHistory(discordId, chatHistory);
-    res.status(500).json({ error: 'Failed to fetch latest Bitcoin block' });
+    console.error('Error fetching latest Bitcoin block info:', error);
+    res.status(500).json({ error: 'Failed to fetch latest Bitcoin block info' });
   }
 });
 
