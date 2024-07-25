@@ -35,6 +35,31 @@
             font-style: italic;
             color: #fff;
         }
+
+        .toolbar {
+            width: 200px;
+            background-color: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toolbar button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .toolbar button:hover {
+            background-color: #0056b3;
+        }
+
         .chat-box {
             max-height: 1000px;
             overflow-y: auto;
@@ -175,6 +200,8 @@
                 <button class="button" onclick="confirmClearChat()">Clear Chat</button>
                 <button class="button" onclick="sendMessage()">Send Message</button>
                 <button class="button" onclick="loadPreviousChat('669286a6143a8475482c3e05')">Load Previous Chat</button>
+            </div>
+            <div class="toolbar">
                 <button class="button" onclick="getCurrentEpochDetails()">Get Current Epoch Details</button>
                 <button class="button" onclick="getMarketPrice('Cardano Native Token ADA')">Cardano Native Token ADA/IAG Price</button>
                 <button class="button" onclick="getLatestBitcoinBlock()">Get Latest Bitcoin Block</button>
