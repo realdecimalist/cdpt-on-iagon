@@ -13,4 +13,4 @@ Welcome to cDPT, an AI-powered assistant designed to revolutionize the way devel
 - **Maestro API Integration**: Fetch current epoch details and Cardano Native Token ADA/IAG market prices in real-time.
 - **Comprehensive Documentation**: Access detailed knowledge of all documentation surrounding development using Iagon, Maestro, and Wanchain.
 
-Test the dApp now at: [https://fancy-pond-7060.iagon.io/](https://fancy-pond-7060.iagon.io/)
+Test the dApp now at: [https://holy-feather-0522.iagon.io/](https://holy-feather-0522.iagon.io/)

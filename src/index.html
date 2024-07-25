@@ -204,7 +204,7 @@
                 await fetchConfig();
             }
 
-            const redirectUri = encodeURIComponent('https://fancy-pond-7060.iagon.io');
+            const redirectUri = encodeURIComponent('https://holy-feather-0522.iagon.io');
             const scope = encodeURIComponent('identify applications.entitlements');
             const responseType = 'code';
             const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
@@ -217,7 +217,7 @@
             const code = urlParams.get('code');
             if (code) {
                 console.log('Authorization Code:', code);
-                const tokenResponse = await fetch('https://fancy-pond-7060.iagon.io/discord/token', {
+                const tokenResponse = await fetch('https://holy-feather-0522.iagon.io/discord/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -248,7 +248,7 @@
                     return;
                 }
 
-                const entitlementsResponse = await fetch(`https://fancy-pond-7060.iagon.io/discord/entitlements?accessToken=${accessToken}`);
+                const entitlementsResponse = await fetch(`https://holy-feather-0522.iagon.io/discord/entitlements?accessToken=${accessToken}`);
                 const entitlements = await entitlementsResponse.json();
                 console.log('Entitlements:', entitlements);
 
@@ -277,7 +277,7 @@
                 if (!storedAccessToken || !discordId) {
                     loginWithDiscord();
                 } else {
-                    const entitlementsResponse = await fetch(`https://fancy-pond-7060.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
+                    const entitlementsResponse = await fetch(`https://holy-feather-0522.iagon.io/discord/entitlements?accessToken=${storedAccessToken}`);
                     const entitlements = await entitlementsResponse.json();
                     const hasSubscription = entitlements && Array.isArray(entitlements) && entitlements.some(entitlement => entitlement.sku_id === '1255974004552892486' && !entitlement.deleted && (!entitlement.ends_at || new Date(entitlement.ends_at) > new Date()));
                     if (hasSubscription) {
@@ -614,7 +614,7 @@
                 addMessageToChat('bot', 'Error fetching Bitcoin chain info');
             }
         }
-        
+
       //  document.addEventListener('DOMContentLoaded', () => {
       //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
       //      loadPreviousChat(fileId);
