@@ -329,7 +329,7 @@ app.get('/get-current-epoch-details', async (req, res) => {
 });
 
 // New endpoint to get the latest Bitcoin block
-app.post('/get-latest-bitcoin-block', async (req, res) => {
+app.get('/get-latest-bitcoin-block', async (req, res) => {
   try {
     const { discordId, chatHistory } = req.body;
 
