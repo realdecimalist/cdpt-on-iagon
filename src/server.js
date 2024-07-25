@@ -298,6 +298,7 @@ app.get('/get-current-epoch-details', async (req, res) => {
 // New endpoint to get the latest Bitcoin block
 app.get('/get-latest-bitcoin-block', async (req, res) => {
   try {
+    console.log('Fetching the latest Bitcoin block info...');
     const response = await fetch('https://xbt-mainnet.gomaestro-api.org/v0/blocks/latest', {
       headers: {
         'Accept': 'application/json',
@@ -312,6 +313,7 @@ app.get('/get-latest-bitcoin-block', async (req, res) => {
     }
 
     const data = await response.json();
+    console.log('Latest Bitcoin block data:', data);
     res.json(data);
   } catch (error) {
     console.error('Error fetching latest Bitcoin block:', error);
