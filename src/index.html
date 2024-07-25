@@ -337,7 +337,7 @@
                 .replace(/'/g, "&#039;");
         }
 
-        async function sendMessage() {
+        async function sendMessage(callback) {
             console.log('Send message button clicked.');
             let message = document.getElementById('message').value;
 
@@ -556,7 +556,6 @@
             console.log('Copied to clipboard:', text);
         }
 
-
         async function getCurrentEpochDetails() {
             try {
                 const chatBox = document.getElementById('chat-box');
@@ -583,48 +582,43 @@
                 console.error('Error fetching current epoch details:', error);
                 addMessageToChat('bot', 'Error fetching current epoch details');
             }
-        }
 
+            saveChatHistory();
+        }
 
         async function getMarketPrice() {
             const tokenA = 'ADA';
             const tokenB = prompt("Please enter the ticker for the second token:");
             if (!tokenB) {
-            alert("You need to enter a ticker to proceed.");
-            return;
+                alert("You need to enter a ticker to proceed.");
+                return;
             }
 
             console.log(`Fetching market price for ${tokenA}-${tokenB}...`);
             try {
-            const response = await fetch(`/get-market-price?tokenA=${tokenA}&tokenB=${tokenB}`);
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error(`Failed to fetch ${tokenA}-${tokenB} price:`, errorData);
-                addMessageToChat('bot', `Failed to fetch ${tokenA}-${tokenB} price`);
-                return;
+                const response = await fetch(`/get-market-price?tokenA=${tokenA}&tokenB=${tokenB}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(`Failed to fetch ${tokenA}-${tokenB} price:`, errorData);
+                    addMessageToChat('bot', `Failed to fetch ${tokenA}-${tokenB} price`);
+                    return;
+                }
+
+                const data = await response.json();
+                const price = data.price || 'Price not found';
+                const priceDetails = `The current Market Price of ${tokenA}-${tokenB} is ${price}`;
+                addMessageToChat('bot', priceDetails);
+            } catch (error) {
+                console.error(`Error fetching ${tokenA}-${tokenB} price:`, error);
+                addMessageToChat('bot', `Error fetching ${tokenA}-${tokenB} price`);
             }
 
-            const data = await response.json();
-            const price = data.price || 'Price not found';
-            const priceDetails = `The current Market Price of ${tokenA}-${tokenB} is ${price}`;
-            addMessageToChat('bot', priceDetails);
-            } catch (error) {
-            console.error(`Error fetching ${tokenA}-${tokenB} price:`, error);
-            addMessageToChat('bot', `Error fetching ${tokenA}-${tokenB} price`);
-            }
+            saveChatHistory();
         }
 
         document.querySelector("#get-price-button").addEventListener("click", () => {
             getMarketPrice();
         });
-
-        function addMessageToChat(sender, message) {
-            const chatBox = document.getElementById('chat-box');
-            const chatMessage = document.createElement('div');
-            chatMessage.classList.add('chat-message', sender);
-            chatMessage.innerText = message;
-            chatBox.appendChild(chatMessage);
-        }
 
         async function getLatestBitcoinBlock() {
             console.log('Get Latest Bitcoin Block button clicked.');
@@ -643,6 +637,8 @@
                 console.error('Error fetching latest Bitcoin block:', error);
                 addMessageToChat('bot', 'Error fetching latest Bitcoin block');
             }
+
+            saveChatHistory();
         }
 
         async function getBitcoinChainInfo() {
@@ -662,6 +658,8 @@
                 console.error('Error fetching Bitcoin chain info:', error);
                 addMessageToChat('bot', 'Error fetching Bitcoin chain info');
             }
+
+            saveChatHistory();
         }
 
         async function getLatestDogecoinBlock() {
@@ -681,6 +679,8 @@
                 console.error('Error fetching latest Dogecoin block:', error);
                 addMessageToChat('bot', 'Error fetching latest Dogecoin block');
             }
+
+            saveChatHistory();
         }
 
         async function getDogecoinChainInfo() {
@@ -700,12 +700,31 @@
                 console.error('Error fetching Dogecoin chain info:', error);
                 addMessageToChat('bot', 'Error fetching Dogecoin chain info');
             }
+
+            saveChatHistory();
         }
 
-      //  document.addEventListener('DOMContentLoaded', () => {
-      //      const fileId = '669286a6143a8475482c3e05'; // Replace with the actual fileId
-      //      loadPreviousChat(fileId);
-      //  });
+        async function saveChatHistory() {
+            const chatBox = document.getElementById('chat-box');
+            const chatHistory = Array.from(chatBox.children).map(child => ({
+                sender: child.classList.contains('user') ? 'user' : 'bot',
+                text: child.innerHTML
+            }));
+
+            try {
+                await fetch('/save-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ discordId, chatHistory })
+                });
+                console.log('Chat history saved for discordId:', discordId);
+            } catch (saveError) {
+                console.error('Failed to save chat history:', saveError);
+                addMessageToChat('bot', 'Warning: Failed to save chat history. You can continue chatting, but the conversation will not be saved.');
+            }
+        }
 
         window.onload = () => {
             localStorage.removeItem('discordId');
