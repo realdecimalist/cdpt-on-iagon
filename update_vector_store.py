@@ -106,6 +106,9 @@ def main():
             logging.info("Successfully updated the vector store.")
         else:
             logging.error(f"Failed to update the vector store: {response.text}")
+            logging.debug(f"Response status code: {response.status_code}")
+            logging.debug(f"Response headers: {response.headers}")
+            logging.debug(f"Response content: {response.content}")
 
 if __name__ == "__main__":
     main()
