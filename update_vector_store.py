@@ -94,6 +94,10 @@ def main():
 
     # Upload to OpenAI Vector Store
     openai_api_key = os.getenv('OPENAI_API_KEY')
+    if not openai_api_key:
+        logging.error("OPENAI_API_KEY is not set.")
+        return
+
     vector_store_id = os.getenv('VECTOR_STORE_ID')
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
