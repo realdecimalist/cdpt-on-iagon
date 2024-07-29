@@ -154,7 +154,7 @@ def upload_to_vector_store(file_path):
         logging.error("JSON validation failed. Aborting upload.")
         return
 
-    # Include the file_id parameter
+    # Include the file_id parameter 
     payload = {
         "vector_store_id": vector_store_id,
         "file_id": os.path.basename(file_path)
