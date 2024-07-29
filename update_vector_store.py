@@ -119,11 +119,21 @@ def commit_to_github(file_path, repo, branch, commit_message):
     encoded_content = b64encode(content).decode('utf-8')
 
     url = f"https://api.github.com/repos/{repo}/contents/{os.path.basename(file_path)}"
+    
+    # Fetch the file's metadata to get the sha
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        sha = response.json()['sha']
+    else:
+        sha = None
+
     data = {
         "message": commit_message,
         "content": encoded_content,
         "branch": branch
     }
+    if sha:
+        data["sha"] = sha
 
     response = requests.put(url, headers=HEADERS, data=json.dumps(data))
     if response.status_code == 201:
