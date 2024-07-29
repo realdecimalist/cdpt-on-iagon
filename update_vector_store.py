@@ -131,6 +131,13 @@ def main():
         json_data = json.load(file)
         logging.debug(f"JSON data being sent: {json.dumps(json_data, indent=4)}")
 
+    # Ensure the JSON data is correctly formatted
+    try:
+        json.dumps(json_data)
+    except ValueError as e:
+        logging.error(f"Invalid JSON data: {e}")
+        return
+
     with open(output_file_path, 'rb') as f:
         response = requests.post(url, headers=headers, files={'file': f})
         if response.status_code == 200:
