@@ -156,7 +156,7 @@ def upload_to_vector_store(file_path):
 
     # Include the file_id parameter 
     payload = {
-        "vector_store_id": vector_store_id,
+      #  "vector_store_id": vector_store_id,
         "file_id": os.path.basename(file_path)
     }
 
