@@ -207,7 +207,8 @@ def fetch_and_upload_cdpt_repo_json():
 
     openai_headers = {
         "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2"
     }
 
     try:
@@ -218,11 +219,15 @@ def fetch_and_upload_cdpt_repo_json():
         logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
 
         if upload_response.status_code == 404:
-            logging.error("Failed to upload file: cdpt_repo.json not found")
+            logging.error("Failed to update the vector store: File not found.")
+        elif upload_response.status_code == 400:
+            logging.error("Failed to update the vector store: Invalid request.")
+        elif upload_response.status_code != 200:
+            logging.error(f"Failed to update the vector store: {upload_response.text}")
         else:
             logging.info("File uploaded successfully")
-    except requests.RequestException as e:
-        logging.error(f"Upload failed: {e}")
+    except Exception as e:
+        logging.error(f"Exception during upload to OpenAI Vector Store: {e}")
 
 def main():
     logging.info("Starting main function")
