@@ -140,20 +140,28 @@ def upload_to_vector_store(file_path):
     vector_store_id = os.getenv('VECTOR_STORE_ID')
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
+        'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2'
     }
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
     logging.info(f"Uploading {file_path} to {url}")
 
-    with open(file_path, 'rb') as f:
-        response = requests.post(url, headers=headers, files={'file': f})
-        if response.status_code == 200:
-            logging.info("Successfully updated the vector store.")
-        else:
-            logging.error(f"Failed to update the vector store: {response.text}")
-            logging.debug(f"Response status code: {response.status_code}")
-            logging.debug(f"Response headers: {response.headers}")
-            logging.debug(f"Response content: {response.content}")
+    with open(file_path, 'r', encoding='utf-8') as f:
+        json_data = json.load(f)
+        json_data_str = json.dumps(json_data)
+
+    if not validate_json(json_data_str):
+        logging.error("JSON validation failed. Aborting upload.")
+        return
+
+    response = requests.post(url, headers=headers, data=json_data_str)
+    if response.status_code == 200:
+        logging.info("Successfully updated the vector store.")
+    else:
+        logging.error(f"Failed to update the vector store: {response.text}")
+        logging.debug(f"Response status code: {response.status_code}")
+        logging.debug(f"Response headers: {response.headers}")
+        logging.debug(f"Response content: {response.content}")
 
 def main():
     logging.info("Starting main function")
