@@ -132,6 +132,27 @@ def commit_to_github(file_path, repo, branch, commit_message):
     else:
         logging.error(f"Failed to commit {file_path} to {repo}: {response.text}")
 
+def delete_previous_file(file_path, repo, branch):
+    """Delete the previous file from the GitHub repository."""
+    url = f"https://api.github.com/repos/{repo}/contents/{os.path.basename(file_path)}"
+    
+    # Fetch the file's metadata to get the sha
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        sha = response.json()['sha']
+        data = {
+            "message": "Delete previous cdpt_repo.json",
+            "sha": sha,
+            "branch": branch
+        }
+        response = requests.delete(url, headers=HEADERS, data=json.dumps(data))
+        if response.status_code == 200:
+            logging.info(f"Successfully deleted {file_path} from {repo} on branch {branch}")
+        else:
+            logging.error(f"Failed to delete {file_path} from {repo}: {response.text}")
+    else:
+        logging.info(f"No previous {file_path} found in {repo} on branch {branch}")
+
 def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
     openai_api_key = os.getenv('OPENAI_API_KEY')
@@ -191,9 +212,12 @@ def main():
         logging.error(f"{output_file_path} does not exist.")
         return
 
-    # Commit the file to GitHub
+    # Delete the previous file from GitHub
     repo = "realdecimalist/cdpt-on-iagon"
     branch = "main"
+    delete_previous_file(output_file_path, repo, branch)
+
+    # Commit the new file to GitHub
     commit_message = "Add cdpt_repo.json"
     commit_to_github(output_file_path, repo, branch, commit_message)
 
