@@ -5,7 +5,7 @@ import logging
 import chardet
 import os
 from base64 import b64encode
-from openai import OpenAI
+import openai
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -138,29 +138,36 @@ def upload_to_vector_store(file_path):
         logging.error("OPENAI_API_KEY is not set.")
         return
 
-    client = OpenAI(api_key=openai_api_key)
     vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
+    headers = {
+        'Authorization': f'Bearer {openai_api_key}',
+        'Content-Type': 'application/json',
+        'OpenAI-Beta': 'assistants=v2'
+    }
+    url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
+    logging.info(f"Uploading {file_path} to {url}")
 
-    logging.info(f"Uploading {file_path} to vector store {vector_store_id}")
+    with open(file_path, 'r', encoding='utf-8') as f:
+        json_data = json.load(f)
+        json_data_str = json.dumps(json_data)
 
-    with open(file_path, 'rb') as f:
-        file_stream = f.read()
-
-    # Ensure the file has the correct extension
-    file_name = os.path.basename(file_path)
-    if not file_name.endswith('.json'):
-        logging.error(f"File {file_name} does not have a .json extension.")
+    if not validate_json(json_data_str):
+        logging.error("JSON validation failed. Aborting upload.")
         return
 
-    # Use the upload and poll SDK helper to upload the files, add them to the vector store, and poll the status of the file batch for completion.
-    file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
-        vector_store_id=vector_store_id,
-        files=[(file_name, file_stream, 'application/json')]
-    )
+    # Include the file_id parameter
+    payload = {
+        "file_id": os.path.basename(file_path)
+    }
 
-    # You can print the status and the file counts of the batch to see the result of this operation.
-    logging.info(f"File batch status: {file_batch.status}")
-    logging.info(f"File batch counts: {file_batch.file_counts}")
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    if response.status_code == 200:
+        logging.info("Successfully updated the vector store.")
+    else:
+        logging.error(f"Failed to update the vector store: {response.text}")
+        logging.debug(f"Response status code: {response.status_code}")
+        logging.debug(f"Response headers: {response.headers}")
+        logging.debug(f"Response content: {response.content}")
 
 def main():
     logging.info("Starting main function")
@@ -174,7 +181,7 @@ def main():
     updated_data = update_content(file_list)
     sanitized_data = sanitize_json(updated_data)
 
-    output_file_path = 'cdpt_repo.json'  # Save as .json file
+    output_file_path = 'cdpt_repo.json'
     logging.info(f"Writing updated data to {output_file_path}")
     with open(output_file_path, 'w', encoding='utf-8') as file:
         json.dump(sanitized_data, file, ensure_ascii=False, indent=4)
@@ -192,7 +199,7 @@ def main():
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
-    # Upload to OpenAI Vector Store 
+    # Upload to OpenAI Vector Store
     upload_to_vector_store(output_file_path)
 
     # Log the entire content of the scraper.log file
