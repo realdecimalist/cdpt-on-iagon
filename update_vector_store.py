@@ -16,34 +16,41 @@ HEADERS = {
 }
 
 def get_repo_contents(url):
+    logging.info(f"Fetching repository contents from URL: {url}")
     try:
         response = requests.get(url, headers=HEADERS)
         response.raise_for_status()  # Raise HTTPError for bad responses
+        logging.info(f"Successfully fetched repository contents from URL: {url}")
         return response.json()
     except requests.exceptions.RequestException as e:
         logging.error(f"Request error for URL {url}: {e}")
         return None
 
 def get_all_files(url, file_list):
+    logging.info(f"Getting all files from URL: {url}")
     contents = get_repo_contents(url)
     if not contents:
         return
     for item in contents:
         if item['type'] == 'file':
             file_list.append(item['download_url'])
+            logging.info(f"Added file URL: {item['download_url']}")
         elif item['type'] == 'dir':
             get_all_files(item['url'], file_list)
 
 def get_url_content(url):
+    logging.info(f"Fetching content from URL: {url}")
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise HTTPError for bad responses
+        logging.info(f"Successfully fetched content from URL: {url}")
         return response.content
     except requests.exceptions.RequestException as e:
         logging.error(f"Request error for URL {url}: {e}")
         return None
 
 def update_content(url_list):
+    logging.info("Updating content from URL list")
     data = {}
 
     for url in url_list:
@@ -80,6 +87,7 @@ def update_content(url_list):
     return data
 
 def main():
+    logging.info("Starting main function")
     file_list = []
     get_all_files(GITHUB_API_URL, file_list)
 
@@ -89,8 +97,17 @@ def main():
 
     updated_data = update_content(file_list)
 
-    with open('cdpt_repo.json', 'w', encoding='utf-8') as file:
+    output_file_path = 'cdpt_repo.json'
+    logging.info(f"Writing updated data to {output_file_path}")
+    with open(output_file_path, 'w', encoding='utf-8') as file:
         json.dump(updated_data, file, ensure_ascii=False, indent=4)
+
+    logging.info(f"Checking if {output_file_path} exists")
+    if not os.path.exists(output_file_path):
+        logging.error(f"{output_file_path} does not exist.")
+        return
+
+    logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
     # Upload to OpenAI Vector Store
     openai_api_key = os.getenv('OPENAI_API_KEY')
@@ -104,7 +121,8 @@ def main():
         'Content-Type': 'application/json'
     }
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
-    with open('cdpt_repo.json', 'rb') as f:
+    logging.info(f"Uploading {output_file_path} to {url}")
+    with open(output_file_path, 'rb') as f:
         response = requests.post(url, headers=headers, files={'file': f})
         if response.status_code == 200:
             logging.info("Successfully updated the vector store.")
@@ -115,4 +133,6 @@ def main():
             logging.debug(f"Response content: {response.content}")
 
 if __name__ == "__main__":
+    logging.info("Script execution started")
     main()
+    logging.info("Script execution completed")
