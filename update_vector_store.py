@@ -133,6 +133,11 @@ def main():
             logging.debug(f"Response headers: {response.headers}")
             logging.debug(f"Response content: {response.content}")
 
+    # Log the entire content of the scraper.log file
+    with open('scraper.log', 'r') as log_file:
+        log_content = log_file.read()
+        logging.info(f"Scraper log content:\n{log_content}")
+
 if __name__ == "__main__":
     logging.info("Script execution started")
     main()
