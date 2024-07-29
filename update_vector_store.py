@@ -156,8 +156,8 @@ def upload_to_vector_store(file_path):
 
     # Include the file_id parameter
     payload = {
-        "file_id": os.path.basename(file_path),
-        "data": json_data
+        "vector_store_id": vector_store_id,
+        "file_id": os.path.basename(file_path)
     }
 
     response = requests.post(url, headers=headers, data=json.dumps(payload))
