@@ -154,7 +154,13 @@ def upload_to_vector_store(file_path):
         logging.error("JSON validation failed. Aborting upload.")
         return
 
-    response = requests.post(url, headers=headers, data=json_data_str)
+    # Include the file_id parameter
+    payload = {
+        "file_id": os.path.basename(file_path),
+        "data": json_data
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
     else:
