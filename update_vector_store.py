@@ -6,7 +6,8 @@ import chardet
 import os
 
 # Configure logging
-logging.basicConfig(filename='scraper.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+log_file_path = 'scraper.log'
+logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
 TOKEN = os.getenv('GITHUB_TOKEN')
@@ -134,7 +135,7 @@ def main():
             logging.debug(f"Response content: {response.content}")
 
     # Log the entire content of the scraper.log file
-    with open('scraper.log', 'r') as log_file:
+    with open(log_file_path, 'r') as log_file:
         log_content = log_file.read()
         logging.info(f"Scraper log content:\n{log_content}")
 
