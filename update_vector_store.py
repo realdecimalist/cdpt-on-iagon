@@ -182,7 +182,8 @@ def upload_to_vector_store(file_path):
 
     # Include the file_id parameter
     payload = {
-        "file_id": os.path.basename(file_path)
+        "file_id": os.path.basename(file_path),
+        "content": json_data_str
     }
 
     response = requests.post(url, headers=headers, data=json.dumps(payload))
@@ -219,7 +220,12 @@ def fetch_and_upload_cdpt_repo_json():
             logging.error("JSON validation failed. Aborting upload.")
             return
 
-        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json_data_str)
+        payload = {
+            "file_id": os.path.basename(GITHUB_RAW_URL),
+            "content": json_data_str
+        }
+
+        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json.dumps(payload))
 
         logging.info(f"Upload response status: {upload_response.status_code}")
         logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
