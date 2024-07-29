@@ -134,7 +134,7 @@ def main():
         return
 
     # Copy the file to the root directory of the repository
-    repo_root_path = os.path.join(os.getcwd(), 'cdpt_repo_copy.json')
+    repo_root_path = os.path.join(os.getcwd(), '..', 'cdpt_repo_copy.json')
     shutil.copy(output_file_path, repo_root_path)
     logging.info(f"Copied {output_file_path} to {repo_root_path}")
 
