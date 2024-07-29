@@ -130,6 +130,31 @@ def commit_to_github(file_path, repo, branch, commit_message):
     else:
         logging.error(f"Failed to commit {file_path} to {repo}: {response.text}")
 
+def upload_to_vector_store(file_path):
+    """Upload the JSON file to the OpenAI vector store."""
+    openai_api_key = os.getenv('OPENAI_API_KEY')
+    if not openai_api_key:
+        logging.error("OPENAI_API_KEY is not set.")
+        return
+
+    vector_store_id = os.getenv('VECTOR_STORE_ID')
+    headers = {
+        'Authorization': f'Bearer {openai_api_key}',
+        'OpenAI-Beta': 'assistants=v2'
+    }
+    url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
+    logging.info(f"Uploading {file_path} to {url}")
+
+    with open(file_path, 'rb') as f:
+        response = requests.post(url, headers=headers, files={'file': f})
+        if response.status_code == 200:
+            logging.info("Successfully updated the vector store.")
+        else:
+            logging.error(f"Failed to update the vector store: {response.text}")
+            logging.debug(f"Response status code: {response.status_code}")
+            logging.debug(f"Response headers: {response.headers}")
+            logging.debug(f"Response content: {response.content}")
+
 def main():
     logging.info("Starting main function")
     file_list = []
@@ -161,48 +186,7 @@ def main():
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
     # Upload to OpenAI Vector Store
-    openai_api_key = os.getenv('OPENAI_API_KEY')
-    if not openai_api_key:
-        logging.error("OPENAI_API_KEY is not set.")
-        return
-
-    vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
-    headers = {
-        'Authorization': f'Bearer {openai_api_key}',
-        'Content-Type': 'application/json',
-        'OpenAI-Beta': 'assistants=v2'
-    }
-    url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
-    logging.info(f"Uploading {output_file_path} to {url}")
-
-    # Log the JSON data before sending
-    with open(output_file_path, 'r', encoding='utf-8') as file:
-        json_data = json.load(file)
-        logging.debug(f"JSON data being sent: {json.dumps(json_data, indent=4)}")
-
-    # Ensure the JSON data is correctly formatted
-    try:
-        json.dumps(json_data)
-    except ValueError as e:
-        logging.error(f"Invalid JSON data: {e}")
-        return
-
-    # Convert JSON data to string and validate it
-    json_data_str = json.dumps(json_data)
-    if not validate_json(json_data_str):
-        logging.error("JSON validation failed. Aborting upload.")
-        return
-
-    files = {'file': (output_file_path, json_data_str, 'application/json')}
-    
-    response = requests.post(url, headers=headers, files=files)
-    if response.status_code == 200:
-        logging.info("Successfully updated the vector store.")
-    else:
-        logging.error(f"Failed to update the vector store: {response.text}")
-        logging.debug(f"Response status code: {response.status_code}")
-        logging.debug(f"Response headers: {response.headers}")
-        logging.debug(f"Response content: {response.content}")
+    upload_to_vector_store(output_file_path)
 
     # Log the entire content of the scraper.log file
     with open(log_file_path, 'r') as log_file:
