@@ -221,8 +221,8 @@ def fetch_and_upload_cdpt_repo_json():
             return
 
         payload = {
-            "file_id": os.path.basename(GITHUB_RAW_URL),
-            "content": json_data_str
+            "file_id": os.path.basename(GITHUB_RAW_URL)
+            #"content": json_data_str
         }
 
         upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json.dumps(payload))
