@@ -4,7 +4,7 @@ import time
 import logging
 import chardet
 import os
-import shutil
+from base64 import b64encode
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -111,6 +111,25 @@ def validate_json(json_data_str):
         logging.error(f"Invalid JSON character(s) near: {invalid_char}")
         return False
 
+def commit_to_github(file_path, repo, branch, commit_message):
+    """Commit a file to a GitHub repository."""
+    with open(file_path, 'rb') as file:
+        content = file.read()
+    encoded_content = b64encode(content).decode('utf-8')
+
+    url = f"https://api.github.com/repos/{repo}/contents/{os.path.basename(file_path)}"
+    data = {
+        "message": commit_message,
+        "content": encoded_content,
+        "branch": branch
+    }
+
+    response = requests.put(url, headers=HEADERS, data=json.dumps(data))
+    if response.status_code == 201:
+        logging.info(f"Successfully committed {file_path} to {repo} on branch {branch}")
+    else:
+        logging.error(f"Failed to commit {file_path} to {repo}: {response.text}")
+
 def main():
     logging.info("Starting main function")
     file_list = []
@@ -133,10 +152,11 @@ def main():
         logging.error(f"{output_file_path} does not exist.")
         return
 
-    # Copy the file to the root directory of the repository
-    repo_root_path = os.path.join(os.getcwd(), '..', 'cdpt_repo_copy.json')
-    shutil.copy(output_file_path, repo_root_path)
-    logging.info(f"Copied {output_file_path} to {repo_root_path}")
+    # Commit the file to GitHub
+    repo = "realdecimalist/cdpt-on-iagon"
+    branch = "main"
+    commit_message = "Add cdpt_repo.json"
+    commit_to_github(output_file_path, repo, branch, commit_message)
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
