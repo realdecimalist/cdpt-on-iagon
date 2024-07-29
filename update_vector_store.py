@@ -192,7 +192,7 @@ def main():
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
-    # Upload to OpenAI Vector Store
+    # Upload to OpenAI Vector Store 
     upload_to_vector_store(output_file_path)
 
     # Log the entire content of the scraper.log file
