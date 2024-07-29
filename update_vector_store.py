@@ -168,7 +168,7 @@ def main():
     updated_data = update_content(file_list)
     sanitized_data = sanitize_json(updated_data)
 
-    output_file_path = 'cdpt_repo.json'
+    output_file_path = 'cdpt_repo.txt'  # Save as .txt file
     logging.info(f"Writing updated data to {output_file_path}")
     with open(output_file_path, 'w', encoding='utf-8') as file:
         json.dump(sanitized_data, file, ensure_ascii=False, indent=4)
@@ -181,7 +181,7 @@ def main():
     # Commit the file to GitHub
     repo = "realdecimalist/cdpt-on-iagon"
     branch = "main"
-    commit_message = "Add cdpt_repo.json"
+    commit_message = "Add cdpt_repo.txt"
     commit_to_github(output_file_path, repo, branch, commit_message)
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
