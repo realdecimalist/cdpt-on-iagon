@@ -11,6 +11,9 @@ import openai
 log_file_path = 'scraper.log'
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
+OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
+
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
 TOKEN = os.getenv('GITHUB_TOKEN')
 HEADERS = {
@@ -191,6 +194,36 @@ def upload_to_vector_store(file_path):
         logging.debug(f"Response headers: {response.headers}")
         logging.debug(f"Response content: {response.content}")
 
+def fetch_and_upload_cdpt_repo_json():
+    logging.info("Fetching cdpt_repo.json from GitHub raw URL")
+    try:
+        response = requests.get(GITHUB_RAW_URL)
+        response.raise_for_status()  # Raise HTTPError for bad responses
+        file_content = response.content
+        logging.info("Successfully fetched cdpt_repo.json")
+    except requests.RequestException as e:
+        logging.error(f"Failed to fetch cdpt_repo.json: {e}")
+        return
+
+    openai_headers = {
+        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        logging.info("Uploading cdpt_repo.json to OpenAI Vector Store")
+        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, files={'file': ('cdpt_repo.json', file_content)})
+
+        logging.info(f"Upload response status: {upload_response.status_code}")
+        logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
+
+        if upload_response.status_code == 404:
+            logging.error("Failed to upload file: cdpt_repo.json not found")
+        else:
+            logging.info("File uploaded successfully")
+    except requests.RequestException as e:
+        logging.error(f"Upload failed: {e}")
+
 def main():
     logging.info("Starting main function")
     file_list = []
@@ -225,6 +258,9 @@ def main():
 
     # Upload to OpenAI Vector Store
     upload_to_vector_store(output_file_path)
+
+    # Fetch and upload cdpt_repo.json directly from the GitHub raw URL
+    fetch_and_upload_cdpt_repo_json()
 
     # Log the entire content of the scraper.log file
     with open(log_file_path, 'r') as log_file:
