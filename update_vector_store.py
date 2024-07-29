@@ -213,7 +213,13 @@ def fetch_and_upload_cdpt_repo_json():
 
     try:
         logging.info("Uploading cdpt_repo.json to OpenAI Vector Store")
-        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, files={'file': ('cdpt_repo.json', file_content)})
+        json_data_str = file_content.decode('utf-8')
+
+        if not validate_json(json_data_str):
+            logging.error("JSON validation failed. Aborting upload.")
+            return
+
+        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json_data_str)
 
         logging.info(f"Upload response status: {upload_response.status_code}")
         logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
