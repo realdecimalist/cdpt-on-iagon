@@ -162,7 +162,7 @@ def upload_to_vector_store(file_path):
     if not openai_api_key:
         logging.error("OPENAI_API_KEY is not set.")
         return
-    
+
     vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
@@ -172,15 +172,21 @@ def upload_to_vector_store(file_path):
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
     logging.info(f"Uploading {file_path} to {url}")
 
-    with open(file_path, 'rb') as f:
-        files = {
-            'file': (os.path.basename(file_path), f, 'application/json')
-        }
-        data = {
-            'purpose': 'assistants'
-        }
-        response = requests.post(url, headers=headers, files=files, data=data)
+    with open(file_path, 'r', encoding='utf-8') as f:
+        json_data = json.load(f)
+        json_data_str = json.dumps(json_data)
 
+    if not validate_json(json_data_str):
+        logging.error("JSON validation failed. Aborting upload.")
+        return
+
+    # Include the file_id parameter
+    payload = {
+        "file_id": os.path.basename(file_path),
+        "content": json_data_str
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
     else:
@@ -214,14 +220,12 @@ def fetch_and_upload_cdpt_repo_json():
             logging.error("JSON validation failed. Aborting upload.")
             return
 
-        files = {
-            'file': (os.path.basename(GITHUB_RAW_URL), file_content, 'application/json')
-        }
-        data = {
-            'purpose': 'assistants'
+        payload = {
+            "file_id": os.path.basename(GITHUB_RAW_URL),
+            "content": json_data_str
         }
 
-        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, files=files, data=data)
+        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json.dumps(payload))
 
         logging.info(f"Upload response status: {upload_response.status_code}")
         logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
