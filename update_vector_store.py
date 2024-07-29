@@ -138,15 +138,18 @@ def main():
         logging.error(f"Invalid JSON data: {e}")
         return
 
-    with open(output_file_path, 'rb') as f:
-        response = requests.post(url, headers=headers, files={'file': f})
-        if response.status_code == 200:
-            logging.info("Successfully updated the vector store.")
-        else:
-            logging.error(f"Failed to update the vector store: {response.text}")
-            logging.debug(f"Response status code: {response.status_code}")
-            logging.debug(f"Response headers: {response.headers}")
-            logging.debug(f"Response content: {response.content}")
+    # Convert JSON data to string and send as part of the request
+    json_data_str = json.dumps(json_data)
+    files = {'file': (output_file_path, json_data_str, 'application/json')}
+    
+    response = requests.post(url, headers=headers, files=files)
+    if response.status_code == 200:
+        logging.info("Successfully updated the vector store.")
+    else:
+        logging.error(f"Failed to update the vector store: {response.text}")
+        logging.debug(f"Response status code: {response.status_code}")
+        logging.debug(f"Response headers: {response.headers}")
+        logging.debug(f"Response content: {response.content}")
 
     # Log the entire content of the scraper.log file
     with open(log_file_path, 'r') as log_file:
