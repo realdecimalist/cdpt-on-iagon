@@ -36,7 +36,7 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git rm -f cdpt_repo.json  # Remove the previous file if it exists
+        git rm -f cdpt_repo.json || true  # Ignore error if file does not exist
         git add cdpt_repo.json
         git commit -m "Add cdpt_repo.json"
         git pull --rebase https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/realdecimalist/cdpt-on-iagon.git main
