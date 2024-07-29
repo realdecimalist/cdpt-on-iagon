@@ -172,14 +172,20 @@ def upload_to_vector_store(file_path):
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
     logging.info(f"Uploading {file_path} to {url}")
 
-    with open(file_path, 'rb') as f:
-        files = {
-            'file': (os.path.basename(file_path), f, 'application/json')
+    with open(file_path, 'r', encoding='utf-8') as f:
+        json_data = json.load(f)
+        json_data_str = json.dumps(json_data)
+
+        if not validate_json(json_data_str):
+            logging.error("JSON validation failed. Aborting upload.")
+            return
+
+        payload = {
+            "file_id": os.path.basename(file_path),
+            "content": json_data_str
         }
-        data = {
-            'purpose': 'assistants'
-        }
-        response = requests.post(url, headers=headers, files=files, data=data)
+
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
 
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
@@ -196,44 +202,13 @@ def fetch_and_upload_cdpt_repo_json():
         response.raise_for_status()  # Raise HTTPError for bad responses
         file_content = response.content
         logging.info("Successfully fetched cdpt_repo.json")
+
+        with open('cdpt_repo.json', 'wb') as file:
+            file.write(file_content)
+
+        upload_to_vector_store('cdpt_repo.json')
     except requests.RequestException as e:
         logging.error(f"Failed to fetch cdpt_repo.json: {e}")
-        return
-
-    openai_headers = {
-        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
-        "Content-Type": "application/json",
-        "OpenAI-Beta": "assistants=v2"
-    }
-
-    try:
-        logging.info("Uploading cdpt_repo.json to OpenAI Vector Store")
-        json_data_str = file_content.decode('utf-8')
-
-        if not validate_json(json_data_str):
-            logging.error("JSON validation failed. Aborting upload.")
-            return
-
-        files = {
-            'file': (os.path.basename(GITHUB_RAW_URL), file_content, 'application/json')
-        }
-        data = {
-            'purpose': 'assistants'
-        }
-
-        upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, files=files, data=data)
-
-        logging.info(f"Upload response status: {upload_response.status_code}")
-        logging.info(f"Upload response content: {upload_response.content.decode('utf-8')}")
-
-        if upload_response.status_code == 404:
-            logging.error("Failed to update the vector store: File not found.")
-        elif upload_response.status_code == 400:
-            logging.error("Failed to update the vector store: Invalid request.")
-        elif upload_response.status_code != 200:
-            logging.error(f"Failed to update the vector store: {upload_response.text}")
-        else:
-            logging.info("File uploaded successfully")
     except Exception as e:
         logging.error(f"Exception during upload to OpenAI Vector Store: {e}")
 
