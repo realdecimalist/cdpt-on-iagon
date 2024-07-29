@@ -4,6 +4,7 @@ import time
 import logging
 import chardet
 import os
+import shutil
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -131,6 +132,11 @@ def main():
     if not os.path.exists(output_file_path):
         logging.error(f"{output_file_path} does not exist.")
         return
+
+    # Copy the file to the root directory of the repository
+    repo_root_path = os.path.join(os.getcwd(), 'cdpt_repo_copy.json')
+    shutil.copy(output_file_path, repo_root_path)
+    logging.info(f"Copied {output_file_path} to {repo_root_path}")
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
