@@ -31,12 +31,14 @@ jobs:
         python update_vector_store.py
 
     - name: Commit cdpt_repo.json to repository
+      env:
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add cdpt_repo.json
         git commit -m "Add cdpt_repo.json"
-        git push origin main
+        git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/realdecimalist/cdpt-on-iagon.git HEAD:main
 
     - name: Display scraper log
       run: cat scraper.log
