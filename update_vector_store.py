@@ -97,6 +97,19 @@ def sanitize_json(data):
         sanitized_data[sanitized_key] = sanitized_value
     return sanitized_data
 
+def validate_json(json_data_str):
+    """Validate JSON data and log specific invalid characters."""
+    try:
+        json.loads(json_data_str)
+        return True
+    except json.JSONDecodeError as e:
+        logging.error(f"JSONDecodeError: {e.msg} at line {e.lineno} column {e.colno} (char {e.pos})")
+        # Log the specific character causing the error
+        error_position = e.pos
+        invalid_char = json_data_str[error_position:error_position+10]  # Log 10 characters around the error
+        logging.error(f"Invalid JSON character(s) near: {invalid_char}")
+        return False
+
 def main():
     logging.info("Starting main function")
     file_list = []
@@ -148,8 +161,12 @@ def main():
         logging.error(f"Invalid JSON data: {e}")
         return
 
-    # Convert JSON data to string and send as part of the request
+    # Convert JSON data to string and validate it
     json_data_str = json.dumps(json_data)
+    if not validate_json(json_data_str):
+        logging.error("JSON validation failed. Aborting upload.")
+        return
+
     files = {'file': (output_file_path, json_data_str, 'application/json')}
     
     response = requests.post(url, headers=headers, files=files)
