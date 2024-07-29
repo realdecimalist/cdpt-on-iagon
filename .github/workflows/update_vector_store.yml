@@ -41,4 +41,4 @@ jobs:
         git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/realdecimalist/cdpt-on-iagon.git HEAD:main
 
     - name: Display scraper log
-      run: cat scraper.log 
+      run: cat scraper.log
