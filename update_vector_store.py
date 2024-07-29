@@ -88,6 +88,15 @@ def update_content(url_list):
 
     return data
 
+def sanitize_json(data):
+    """Sanitize JSON data by removing unnecessary whitespace and escape sequences."""
+    sanitized_data = {}
+    for key, value in data.items():
+        sanitized_key = key.strip()
+        sanitized_value = value.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+        sanitized_data[sanitized_key] = sanitized_value
+    return sanitized_data
+
 def main():
     logging.info("Starting main function")
     file_list = []
@@ -98,11 +107,12 @@ def main():
         return
 
     updated_data = update_content(file_list)
+    sanitized_data = sanitize_json(updated_data)
 
     output_file_path = 'cdpt_repo.json'
     logging.info(f"Writing updated data to {output_file_path}")
     with open(output_file_path, 'w', encoding='utf-8') as file:
-        json.dump(updated_data, file, ensure_ascii=False, indent=4)
+        json.dump(sanitized_data, file, ensure_ascii=False, indent=4)
 
     logging.info(f"Checking if {output_file_path} exists")
     if not os.path.exists(output_file_path):
