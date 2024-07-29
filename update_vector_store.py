@@ -137,7 +137,7 @@ def upload_to_vector_store(file_path):
         logging.error("OPENAI_API_KEY is not set.")
         return
 
-    vector_store_id = os.getenv('VECTOR_STORE_ID')
+    vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
         'Content-Type': 'application/json',
