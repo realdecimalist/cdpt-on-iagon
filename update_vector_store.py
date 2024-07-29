@@ -146,10 +146,16 @@ def upload_to_vector_store(file_path):
     with open(file_path, 'rb') as f:
         file_stream = f.read()
 
+    # Ensure the file has the correct extension
+    file_name = os.path.basename(file_path)
+    if not file_name.endswith('.json'):
+        logging.error(f"File {file_name} does not have a .json extension.")
+        return
+
     # Use the upload and poll SDK helper to upload the files, add them to the vector store, and poll the status of the file batch for completion.
     file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
         vector_store_id=vector_store_id,
-        files=[file_stream]
+        files=[(file_name, file_stream, 'application/json')]
     )
 
     # You can print the status and the file counts of the batch to see the result of this operation.
