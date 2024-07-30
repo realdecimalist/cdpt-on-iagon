@@ -5,7 +5,7 @@ import logging
 import chardet
 import os
 from base64 import b64encode
-import openai  # Make sure to install the OpenAI Python package
+from openai import OpenAI
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -14,7 +14,8 @@ logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler())  # Add this to log to stdout
 
 # Set the OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=openai_api_key)
 
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
@@ -166,14 +167,13 @@ def delete_previous_file(file_path, repo, branch):
 
 def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
-    openai_api_key = os.getenv('OPENAI_API_KEY')
     if not openai_api_key:
         logging.error("OPENAI_API_KEY is not set.")
         return
 
     # Check if the vector store exists
     vector_store_name = "CDPTRepoStore"
-    vector_stores = openai.vector_stores.list()["data"]
+    vector_stores = client.beta.vector_stores.list()["data"]
     vector_store_id = None
     for store in vector_stores:
         if store["name"] == vector_store_name:
@@ -182,16 +182,16 @@ def upload_to_vector_store(file_path):
     
     # If the vector store does not exist, create it
     if not vector_store_id:
-        vector_store = openai.vector_stores.create(name=vector_store_name)
+        vector_store = client.beta.vector_stores.create(name=vector_store_name)
         vector_store_id = vector_store["id"]
 
     # Upload the file and poll for status
     with open(file_path, "rb") as f:
-        file_batch = openai.vector_stores.file_batches.upload_and_poll(
+        file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
             vector_store_id=vector_store_id, files=[f]
         )
     
-    # Print the status and file counts
+    # Print the status and the file counts
     logging.info(f"File batch status: {file_batch.status}")
     logging.info(f"File counts: {file_batch.file_counts}")
 
