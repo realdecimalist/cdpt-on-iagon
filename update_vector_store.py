@@ -181,7 +181,14 @@ def upload_to_vector_store(file_path, json_data_str):
         logging.error("JSON validation failed. Aborting upload.")
         return
 
-    response = requests.post(url, headers=headers, data=json_data_str)
+    data = {
+        'purpose': 'assistants',
+        'file_id': os.path.basename(file_path),
+        'content': json_data_str
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
     else:
@@ -189,6 +196,7 @@ def upload_to_vector_store(file_path, json_data_str):
         logging.debug(f"Response status code: {response.status_code}")
         logging.debug(f"Response headers: {response.headers}")
         logging.debug(f"Response content: {response.content}")
+
 
 def fetch_and_upload_cdpt_repo_json():
     logging.info("Fetching cdpt_repo.json from GitHub raw URL")
