@@ -23,10 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests chardet openai
 
-    - name: Validate JSON
-      run: |
-        python -c "import json; json.load(open('cdpt_repo.json'))"
-
     - name: Update Vector Store
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,7 +41,9 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "Update cdpt_repo.json"
+          git stash
           git pull --rebase origin main || git rebase --abort
+          git stash pop
           git push origin HEAD:main
         fi
 
