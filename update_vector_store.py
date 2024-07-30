@@ -182,7 +182,7 @@ def upload_to_vector_store(file_path, json_data_str):
         return
 
     data = {
-        'purpose': 'assistants',
+        #'purpose': 'assistants',
         'file_id': os.path.basename(file_path),
         'content': json_data_str
     }
