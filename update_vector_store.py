@@ -182,7 +182,6 @@ def upload_to_vector_store(file_path, json_data_str):
         return
 
     data = {
-        'purpose': 'assistants',
         'file_id': os.path.basename(file_path),
         'content': json_data_str
     }
@@ -198,6 +197,7 @@ def upload_to_vector_store(file_path, json_data_str):
         logging.debug(f"Response status code: {response.status_code}")
         logging.debug(f"Response headers: {response.headers}")
         logging.debug(f"Response content: {response.content}")
+
 
 
 def fetch_and_upload_cdpt_repo_json():
