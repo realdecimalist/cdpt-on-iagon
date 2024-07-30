@@ -46,6 +46,3 @@ jobs:
           git stash pop
           git push origin HEAD:main
         fi
-
-    - name: Display scraper log
-      run: cat scraper.log
