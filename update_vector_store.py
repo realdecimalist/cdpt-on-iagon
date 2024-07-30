@@ -128,7 +128,7 @@ def commit_to_github(file_path, repo, branch, commit_message):
         data["sha"] = sha
 
     response = requests.put(url, headers=HEADERS, data=json.dumps(data))
-    if response.status_code == 201 or response.status_code == 200:
+    if response.status_code in [200, 201]:
         logging.info(f"Successfully committed {file_path} to {repo} on branch {branch}")
     else:
         logging.error(f"Failed to commit {file_path} to {repo}: {response.text}")
@@ -238,14 +238,21 @@ def main():
     with open(output_file_path, 'r', encoding='utf-8') as file:
         json_data_str = file.read()
 
+    # Validate JSON before proceeding
+    if not validate_json(json_data_str):
+        logging.error("Updated JSON data is invalid. Aborting.")
+        return
+
     # Upload to OpenAI Vector Store
     upload_to_vector_store(output_file_path, json_data_str)
 
-    # Commit the new file to GitHub
+    # Delete the previous file from GitHub
     repo = "realdecimalist/cdpt-on-iagon"
     branch = "main"
-    commit_message = "Update cdpt_repo.json"
     delete_previous_file(output_file_path, repo, branch)
+
+    # Commit the new file to GitHub
+    commit_message = "Update cdpt_repo.json"
     commit_to_github(output_file_path, repo, branch, commit_message)
 
     # Fetch and upload cdpt_repo.json directly from the GitHub raw URL
