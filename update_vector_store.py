@@ -166,7 +166,6 @@ def upload_to_vector_store(file_path):
     vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
-        'Content-Type': 'application/json',
         'OpenAI-Beta': 'assistants=v2'
     }
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
@@ -180,13 +179,18 @@ def upload_to_vector_store(file_path):
         logging.error("JSON validation failed. Aborting upload.")
         return
 
-    # Include the file_id parameter
-    payload = {
-        "file_id": os.path.basename(file_path),
-        "content": json_data_str
-    }
+    with open(file_path, 'rb') as f:
+        files = {
+            'file': (os.path.basename(file_path), f, 'application/json')
+        }
+        data = {
+            'purpose': 'assistants',
+            'file_id': os.path.basename(file_path),
+            'content': json_data_str
+        }
 
-    response = requests.post(url, headers=headers, data=json.dumps(payload))
+        response = requests.post(url, headers=headers, files=files, data=data)
+
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
     else:
@@ -206,6 +210,13 @@ def fetch_and_upload_cdpt_repo_json():
         logging.error(f"Failed to fetch cdpt_repo.json: {e}")
         return
 
+       # Save the content to a local file
+    with open('cdpt_repo.json', 'wb') as f:
+        f.write(file_content)
+
+    # Now call the upload function with the local file path
+    upload_to_vector_store('cdpt_repo.json')
+    
     openai_headers = {
         "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
         "Content-Type": "application/json",
