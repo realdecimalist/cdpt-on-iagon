@@ -89,11 +89,12 @@ def update_content(url_list):
 
         time.sleep(1)  # Respectful delay to avoid hitting server too hard
 
-          # Ensure scraper.log is not included
-        if 'scraper.log' in data:
-            del data['scraper.log']
+    # Ensure scraper.log is not included
+    if 'https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/scraper.log' in data:
+        del data['https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/scraper.log']
 
     return data
+
 
 def validate_json(json_data_str):
     """Validate JSON data and log specific invalid characters."""
