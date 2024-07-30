@@ -162,7 +162,7 @@ def upload_to_vector_store(file_path):
     if not openai_api_key:
         logging.error("OPENAI_API_KEY is not set.")
         return
-    
+
     vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
@@ -186,27 +186,14 @@ def upload_to_vector_store(file_path):
         "content": json_data_str
     }
 
-    with open(file_path, 'rb') as f:
-        files = {
-            'file': (os.path.basename(file_path), f, 'application/json')
-        }
-        data = {
-            'purpose': 'assistants'
-        }
-        response = requests.post(url, headers=headers, files=files, data=data)
-
-    logging.info(f"Upload response status: {response.status_code}")
-    logging.info(f"Upload response content: {response.content.decode('utf-8')}")
-
-    if response.status_code == 404:
-        logging.error("Failed to update the vector store: File not found.")
-    elif response.status_code == 400:
-        logging.error("Failed to update the vector store: Invalid request.")
-    elif response.status_code != 200:
-        logging.error(f"Failed to update the vector store: {response.text}")
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    if response.status_code == 200:
+        logging.info("Successfully updated the vector store.")
     else:
-        logging.info("File uploaded successfully")
-
+        logging.error(f"Failed to update the vector store: {response.text}")
+        logging.debug(f"Response status code: {response.status_code}")
+        logging.debug(f"Response headers: {response.headers}")
+        logging.debug(f"Response content: {response.content}")
 
 def fetch_and_upload_cdpt_repo_json():
     logging.info("Fetching cdpt_repo.json from GitHub raw URL")
@@ -233,11 +220,9 @@ def fetch_and_upload_cdpt_repo_json():
             logging.error("JSON validation failed. Aborting upload.")
             return
 
-        with open('cdpt_repo.json', 'wb') as file:
-            file.write(file_content)
-
         payload = {
             "file_id": os.path.basename(GITHUB_RAW_URL)
+            #"content": json_data_str
         }
 
         upload_response = requests.post(OPENAI_API_URL, headers=openai_headers, data=json.dumps(payload))
