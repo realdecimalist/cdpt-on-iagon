@@ -187,6 +187,8 @@ def upload_to_vector_store(file_path, json_data_str):
         'content': json_data_str
     }
 
+    logging.debug(f"Payload data: {json.dumps(data, indent=4)}")
+
     response = requests.post(url, headers=headers, json=data)
 
     if response.status_code == 200:
