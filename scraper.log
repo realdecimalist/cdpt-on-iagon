@@ -1,0 +1,645 @@
+2024-07-30 15:08:55,478 - INFO - Script execution started
+2024-07-30 15:08:55,478 - INFO - Starting main function
+2024-07-30 15:08:55,478 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,478 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,491 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,657 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/ HTTP/11" 200 None
+2024-07-30 15:08:55,657 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,657 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,657 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,658 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,804 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main HTTP/11" 200 None
+2024-07-30 15:08:55,804 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,804 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,804 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,805 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,942 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main HTTP/11" 200 None
+2024-07-30 15:08:55,942 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:08:55,942 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:55,942 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:55,943 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:56,105 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main HTTP/11" 200 None
+2024-07-30 15:08:56,106 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:08:56,106 - INFO - Updating content from URL list
+2024-07-30 15:08:56,106 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,106 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,107 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:56,272 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml HTTP/11" 200 539
+2024-07-30 15:08:56,273 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,274 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml: ascii with confidence 1.0
+2024-07-30 15:08:56,274 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml: name: Update Vector Store
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-vector-store:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests chardet openai
+
+    - name: Update Vector Store
+      env:
+        GITHUB_T...
+2024-07-30 15:08:57,274 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,274 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,275 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:57,388 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/.gitignore HTTP/11" 200 38
+2024-07-30 15:08:57,388 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,388 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore: ascii with confidence 1.0
+2024-07-30 15:08:57,388 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore: node_modules/
+.env...
+2024-07-30 15:08:58,389 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,389 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,389 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:58,496 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/README.md HTTP/11" 200 678
+2024-07-30 15:08:58,497 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,498 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md: ascii with confidence 1.0
+2024-07-30 15:08:58,498 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md: # cdpt-on-iagon
+
+**cDPT - The Only AI Assistant Developers Will Ever Need For Cardano**
+
+Welcome to cDPT, an AI-powered assistant designed to revolutionize the way developers build dApps and games on the Cardano blockchain. Built on Iagon Compute with Iagon Storage integration, cDPT offers seamless chat history management, real-time data retrieval, and comprehensive guidance on Cardano development tools, languages, SDKs, and APIs.
+
+## Features
+
+- **Login with Discord**: Click the 'Login with Dis...
+2024-07-30 15:08:59,498 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,498 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,499 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:59,612 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/build.js HTTP/11" 200 445
+2024-07-30 15:08:59,613 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,613 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js: ascii with confidence 1.0
+2024-07-30 15:08:59,613 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js: import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
+
+const execPromise = promisify(exec);
+
+async function cleanDist() {
+    if (fs.existsSync('dist')) {
+        fs.rmSync('dist', { recursive: true, force: true });
+    }
+}
+
+async function copyFiles(src, dest) {
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+    fs.mkdirSync(dest, { recursive: true });
+
+    for (let entry of entries) {
+        const srcPath = path...
+2024-07-30 15:09:00,613 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:00,614 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:00,614 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:01,340 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/cdpt_repo.json HTTP/11" 200 462498
+2024-07-30 15:09:01,728 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:11,490 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json: ascii with confidence 1.0
+2024-07-30 15:09:11,493 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json: {
+    "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml": "name: Update Vector Store\n\non:\n  push:\n    branches:\n      - main\n\njobs:\n  update-vector-store:\n    runs-on: ubuntu-latest\n\n    steps:\n    - name: Check out repository\n      uses: actions/checkout@v4\n\n    - name: Set up Python\n      uses: actions/setup-python@v4\n      with:\n        python-version: '3.x'\n\n    - name: Install dependencies\n      run: |\n      ...
+2024-07-30 15:09:12,493 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,493 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,494 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:12,605 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/package-lock.json HTTP/11" 200 9238
+2024-07-30 15:09:12,606 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,616 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json: ascii with confidence 1.0
+2024-07-30 15:09:12,616 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json: {
+  "name": "cdpt-on-iagon",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "cdpt-on-iagon",
+      "version": "1.0.0",
+      "license": "ISC",
+      "dependencies": {
+        "axios": "^1.7.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.0",
+        "express": "^4.19.2",
+        "form-data": "^4.0.0",
+        "marked": "^13.0.2",
+        "node-fetch": "^3.3.2"
+      }
+    },
+    "node_modules/accepts": {
+      "version": "1.3.8",
+...
+2024-07-30 15:09:13,616 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,616 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,617 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:13,723 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/package.json HTTP/11" 200 264
+2024-07-30 15:09:13,723 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,724 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json: ascii with confidence 1.0
+2024-07-30 15:09:13,724 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json: {
+  "name": "cdpt-on-iagon",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "marked": "^13.0.2",
+    "node-fetch": "^3.3.2"
+  }
+}
+...
+2024-07-30 15:09:14,724 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:14,724 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:14,725 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:15,054 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/src/index.html HTTP/11" 200 6786
+2024-07-30 15:09:15,054 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:15,065 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html: ascii with confidence 1.0
+2024-07-30 15:09:15,065 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cDPT AI Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
+        body {
+            font-family: 'Anybody', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            ju...
+2024-07-30 15:09:16,065 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,065 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,066 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:16,636 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/src/server.js HTTP/11" 200 2947
+2024-07-30 15:09:16,636 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,641 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js: ascii with confidence 1.0
+2024-07-30 15:09:16,641 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js: import express from 'express';
+import fetch from 'node-fetch';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import FormData from 'form-data';
+import { marked } from 'marked';
+import axios from 'axios';
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const WHITELISTED_USER_IDS = ['410954739547766795'...
+2024-07-30 15:09:17,641 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,641 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,642 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:17,778 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/update_vector_store.py HTTP/11" 200 3003
+2024-07-30 15:09:17,778 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,782 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py: ascii with confidence 1.0
+2024-07-30 15:09:17,782 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py: import requests
+import json
+import time
+import logging
+import chardet
+import os
+from base64 import b64encode
+import openai
+
+# Configure logging
+log_file_path = 'scraper.log'
+logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
+OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
+
+GITHUB_API_U...
+2024-07-30 15:09:18,782 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,782 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,783 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:18,975 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/webpack.config.js HTTP/11" 200 280
+2024-07-30 15:09:18,976 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,976 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js: ascii with confidence 1.0
+2024-07-30 15:09:18,976 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js: const path = require('path');
+
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            }...
+2024-07-30 15:09:19,976 - INFO - Writing updated data to cdpt_repo.json
+2024-07-30 15:09:20,270 - INFO - Checking if cdpt_repo.json exists
+2024-07-30 15:09:20,271 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:20,666 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 200 None
+2024-07-30 15:09:20,667 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:21,502 - DEBUG - https://api.github.com:443 "DELETE /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 200 None
+2024-07-30 15:09:21,503 - INFO - Successfully deleted cdpt_repo.json from realdecimalist/cdpt-on-iagon on branch main
+2024-07-30 15:09:21,609 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:21,799 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 404 None
+2024-07-30 15:09:22,032 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:28,557 - DEBUG - https://api.github.com:443 "PUT /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 422 250
+2024-07-30 15:09:28,558 - ERROR - Failed to commit cdpt_repo.json to realdecimalist/cdpt-on-iagon: {"message":"Sorry, the file is too large to be processed. Consider creating/updating the file in a local clone and pushing it to GitHub.","documentation_url":"https://docs.github.com/rest/repos/contents#create-or-update-file-contents","status":"422"}
+2024-07-30 15:09:28,559 - INFO - cdpt_repo.json exists. Proceeding to upload to OpenAI Vector Store
+2024-07-30 15:09:28,559 - INFO - Uploading cdpt_repo.json to https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files
+2024-07-30 15:09:29,110 - DEBUG - Starting new HTTPS connection (1): api.openai.com:443
+2024-07-30 15:09:31,024 - DEBUG - https://api.openai.com:443 "POST /v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files HTTP/11" 400 311
+2024-07-30 15:09:31,025 - INFO - Upload response status: 400
+2024-07-30 15:09:31,025 - INFO - Upload response content: {
+  "error": {
+    "message": "Invalid body: failed to parse JSON value. Please check the value to ensure it is valid JSON. (Common errors include trailing commas, missing closing brackets, missing quotation marks, etc.)",
+    "type": "invalid_request_error",
+    "param": null,
+    "code": "invalid_json"
+  }
+}
+2024-07-30 15:09:31,025 - ERROR - Failed to update the vector store: Invalid request.
+2024-07-30 15:09:31,028 - INFO - Fetching cdpt_repo.json from GitHub raw URL
+2024-07-30 15:09:31,029 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:31,041 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/cdpt_repo.json HTTP/11" 200 462498
+2024-07-30 15:09:31,411 - INFO - Successfully fetched cdpt_repo.json
+2024-07-30 15:09:31,412 - INFO - Uploading cdpt_repo.json to OpenAI Vector Store
+2024-07-30 15:09:31,562 - DEBUG - Starting new HTTPS connection (1): api.openai.com:443
+2024-07-30 15:09:31,777 - DEBUG - https://api.openai.com:443 "POST /v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files HTTP/11" 404 None
+2024-07-30 15:09:31,778 - INFO - Upload response status: 404
+2024-07-30 15:09:31,778 - INFO - Upload response content: {
+  "error": {
+    "message": "Files [cdpt_repo.json] were not found",
+    "type": "invalid_request_error",
+    "param": null,
+    "code": null
+  }
+}
+2024-07-30 15:09:31,778 - ERROR - Failed to update the vector store: File not found.
+2024-07-30 15:09:31,780 - INFO - Scraper log content:
+2024-07-30 15:08:55,478 - INFO - Script execution started
+2024-07-30 15:08:55,478 - INFO - Starting main function
+2024-07-30 15:08:55,478 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,478 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,491 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,657 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/ HTTP/11" 200 None
+2024-07-30 15:08:55,657 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/
+2024-07-30 15:08:55,657 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,657 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,658 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,804 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main HTTP/11" 200 None
+2024-07-30 15:08:55,804 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github?ref=main
+2024-07-30 15:08:55,804 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,804 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,805 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:55,942 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main HTTP/11" 200 None
+2024-07-30 15:08:55,942 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/.github/workflows?ref=main
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:08:55,942 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:08:55,942 - INFO - Getting all files from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:55,942 - INFO - Fetching repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:55,943 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:08:56,105 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main HTTP/11" 200 None
+2024-07-30 15:08:56,106 - INFO - Successfully fetched repository contents from URL: https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/src?ref=main
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:08:56,106 - INFO - Added file URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:08:56,106 - INFO - Updating content from URL list
+2024-07-30 15:08:56,106 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,106 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,107 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:56,272 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml HTTP/11" 200 539
+2024-07-30 15:08:56,273 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml
+2024-07-30 15:08:56,274 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml: ascii with confidence 1.0
+2024-07-30 15:08:56,274 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml: name: Update Vector Store
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-vector-store:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests chardet openai
+
+    - name: Update Vector Store
+      env:
+        GITHUB_T...
+2024-07-30 15:08:57,274 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,274 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,275 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:57,388 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/.gitignore HTTP/11" 200 38
+2024-07-30 15:08:57,388 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore
+2024-07-30 15:08:57,388 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore: ascii with confidence 1.0
+2024-07-30 15:08:57,388 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.gitignore: node_modules/
+.env...
+2024-07-30 15:08:58,389 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,389 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,389 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:58,496 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/README.md HTTP/11" 200 678
+2024-07-30 15:08:58,497 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md
+2024-07-30 15:08:58,498 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md: ascii with confidence 1.0
+2024-07-30 15:08:58,498 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/README.md: # cdpt-on-iagon
+
+**cDPT - The Only AI Assistant Developers Will Ever Need For Cardano**
+
+Welcome to cDPT, an AI-powered assistant designed to revolutionize the way developers build dApps and games on the Cardano blockchain. Built on Iagon Compute with Iagon Storage integration, cDPT offers seamless chat history management, real-time data retrieval, and comprehensive guidance on Cardano development tools, languages, SDKs, and APIs.
+
+## Features
+
+- **Login with Discord**: Click the 'Login with Dis...
+2024-07-30 15:08:59,498 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,498 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,499 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:08:59,612 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/build.js HTTP/11" 200 445
+2024-07-30 15:08:59,613 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js
+2024-07-30 15:08:59,613 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js: ascii with confidence 1.0
+2024-07-30 15:08:59,613 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/build.js: import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs';
+import path from 'path';
+
+const execPromise = promisify(exec);
+
+async function cleanDist() {
+    if (fs.existsSync('dist')) {
+        fs.rmSync('dist', { recursive: true, force: true });
+    }
+}
+
+async function copyFiles(src, dest) {
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+    fs.mkdirSync(dest, { recursive: true });
+
+    for (let entry of entries) {
+        const srcPath = path...
+2024-07-30 15:09:00,613 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:00,614 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:00,614 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:01,340 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/cdpt_repo.json HTTP/11" 200 462498
+2024-07-30 15:09:01,728 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json
+2024-07-30 15:09:11,490 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json: ascii with confidence 1.0
+2024-07-30 15:09:11,493 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json: {
+    "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/.github/workflows/update_vector_store.yml": "name: Update Vector Store\n\non:\n  push:\n    branches:\n      - main\n\njobs:\n  update-vector-store:\n    runs-on: ubuntu-latest\n\n    steps:\n    - name: Check out repository\n      uses: actions/checkout@v4\n\n    - name: Set up Python\n      uses: actions/setup-python@v4\n      with:\n        python-version: '3.x'\n\n    - name: Install dependencies\n      run: |\n      ...
+2024-07-30 15:09:12,493 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,493 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,494 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:12,605 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/package-lock.json HTTP/11" 200 9238
+2024-07-30 15:09:12,606 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json
+2024-07-30 15:09:12,616 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json: ascii with confidence 1.0
+2024-07-30 15:09:12,616 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package-lock.json: {
+  "name": "cdpt-on-iagon",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "cdpt-on-iagon",
+      "version": "1.0.0",
+      "license": "ISC",
+      "dependencies": {
+        "axios": "^1.7.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.0",
+        "express": "^4.19.2",
+        "form-data": "^4.0.0",
+        "marked": "^13.0.2",
+        "node-fetch": "^3.3.2"
+      }
+    },
+    "node_modules/accepts": {
+      "version": "1.3.8",
+...
+2024-07-30 15:09:13,616 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,616 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,617 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:13,723 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/package.json HTTP/11" 200 264
+2024-07-30 15:09:13,723 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json
+2024-07-30 15:09:13,724 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json: ascii with confidence 1.0
+2024-07-30 15:09:13,724 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/package.json: {
+  "name": "cdpt-on-iagon",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "marked": "^13.0.2",
+    "node-fetch": "^3.3.2"
+  }
+}
+...
+2024-07-30 15:09:14,724 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:14,724 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:14,725 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:15,054 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/src/index.html HTTP/11" 200 6786
+2024-07-30 15:09:15,054 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html
+2024-07-30 15:09:15,065 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html: ascii with confidence 1.0
+2024-07-30 15:09:15,065 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/index.html: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cDPT AI Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anybody:wght@400;700&display=swap');
+        body {
+            font-family: 'Anybody', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            ju...
+2024-07-30 15:09:16,065 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,065 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,066 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:16,636 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/src/server.js HTTP/11" 200 2947
+2024-07-30 15:09:16,636 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js
+2024-07-30 15:09:16,641 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js: ascii with confidence 1.0
+2024-07-30 15:09:16,641 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/src/server.js: import express from 'express';
+import fetch from 'node-fetch';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import FormData from 'form-data';
+import { marked } from 'marked';
+import axios from 'axios';
+
+dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const WHITELISTED_USER_IDS = ['410954739547766795'...
+2024-07-30 15:09:17,641 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,641 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,642 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:17,778 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/update_vector_store.py HTTP/11" 200 3003
+2024-07-30 15:09:17,778 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py
+2024-07-30 15:09:17,782 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py: ascii with confidence 1.0
+2024-07-30 15:09:17,782 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/update_vector_store.py: import requests
+import json
+import time
+import logging
+import chardet
+import os
+from base64 import b64encode
+import openai
+
+# Configure logging
+log_file_path = 'scraper.log'
+logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
+OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
+
+GITHUB_API_U...
+2024-07-30 15:09:18,782 - INFO - Requesting URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,782 - INFO - Fetching content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,783 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:18,975 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/webpack.config.js HTTP/11" 200 280
+2024-07-30 15:09:18,976 - INFO - Successfully fetched content from URL: https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js
+2024-07-30 15:09:18,976 - INFO - Detected encoding for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js: ascii with confidence 1.0
+2024-07-30 15:09:18,976 - DEBUG - Content for URL https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/webpack.config.js: const path = require('path');
+
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            }...
+2024-07-30 15:09:19,976 - INFO - Writing updated data to cdpt_repo.json
+2024-07-30 15:09:20,270 - INFO - Checking if cdpt_repo.json exists
+2024-07-30 15:09:20,271 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:20,666 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 200 None
+2024-07-30 15:09:20,667 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:21,502 - DEBUG - https://api.github.com:443 "DELETE /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 200 None
+2024-07-30 15:09:21,503 - INFO - Successfully deleted cdpt_repo.json from realdecimalist/cdpt-on-iagon on branch main
+2024-07-30 15:09:21,609 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:21,799 - DEBUG - https://api.github.com:443 "GET /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 404 None
+2024-07-30 15:09:22,032 - DEBUG - Starting new HTTPS connection (1): api.github.com:443
+2024-07-30 15:09:28,557 - DEBUG - https://api.github.com:443 "PUT /repos/realdecimalist/cdpt-on-iagon/contents/cdpt_repo.json HTTP/11" 422 250
+2024-07-30 15:09:28,558 - ERROR - Failed to commit cdpt_repo.json to realdecimalist/cdpt-on-iagon: {"message":"Sorry, the file is too large to be processed. Consider creating/updating the file in a local clone and pushing it to GitHub.","documentation_url":"https://docs.github.com/rest/repos/contents#create-or-update-file-contents","status":"422"}
+2024-07-30 15:09:28,559 - INFO - cdpt_repo.json exists. Proceeding to upload to OpenAI Vector Store
+2024-07-30 15:09:28,559 - INFO - Uploading cdpt_repo.json to https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files
+2024-07-30 15:09:29,110 - DEBUG - Starting new HTTPS connection (1): api.openai.com:443
+2024-07-30 15:09:31,024 - DEBUG - https://api.openai.com:443 "POST /v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files HTTP/11" 400 311
+2024-07-30 15:09:31,025 - INFO - Upload response status: 400
+2024-07-30 15:09:31,025 - INFO - Upload response content: {
+  "error": {
+    "message": "Invalid body: failed to parse JSON value. Please check the value to ensure it is valid JSON. (Common errors include trailing commas, missing closing brackets, missing quotation marks, etc.)",
+    "type": "invalid_request_error",
+    "param": null,
+    "code": "invalid_json"
+  }
+}
+2024-07-30 15:09:31,025 - ERROR - Failed to update the vector store: Invalid request.
+2024-07-30 15:09:31,028 - INFO - Fetching cdpt_repo.json from GitHub raw URL
+2024-07-30 15:09:31,029 - DEBUG - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+2024-07-30 15:09:31,041 - DEBUG - https://raw.githubusercontent.com:443 "GET /realdecimalist/cdpt-on-iagon/main/cdpt_repo.json HTTP/11" 200 462498
+2024-07-30 15:09:31,411 - INFO - Successfully fetched cdpt_repo.json
+2024-07-30 15:09:31,412 - INFO - Uploading cdpt_repo.json to OpenAI Vector Store
+2024-07-30 15:09:31,562 - DEBUG - Starting new HTTPS connection (1): api.openai.com:443
+2024-07-30 15:09:31,777 - DEBUG - https://api.openai.com:443 "POST /v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files HTTP/11" 404 None
+2024-07-30 15:09:31,778 - INFO - Upload response status: 404
+2024-07-30 15:09:31,778 - INFO - Upload response content: {
+  "error": {
+    "message": "Files [cdpt_repo.json] were not found",
+    "type": "invalid_request_error",
+    "param": null,
+    "code": null
+  }
+}
+2024-07-30 15:09:31,778 - ERROR - Failed to update the vector store: File not found.
+
+2024-07-30 15:09:31,780 - INFO - Script execution completed
