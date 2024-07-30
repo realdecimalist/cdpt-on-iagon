@@ -171,18 +171,19 @@ def delete_existing_vector_store_file(vector_store_id, file_name):
     """Delete the existing file from the vector store."""
     try:
         logging.info(f"Listing files in vector store {vector_store_id}")
-        vector_store_files = client.vector_stores.get(vector_store_id).files()
+        response = client.vector_stores.get(vector_store_id).files()
+        vector_store_files = response['data']
         logging.info(f"Retrieved files from vector store {vector_store_id}: {vector_store_files}")
 
         for file in vector_store_files:
-            if file.filename == file_name:
-                logging.info(f"Found file {file.id} with name {file_name} in vector store {vector_store_id}")
-                response = client.vector_stores.files.delete(vector_store_id, file.id)
-                logging.info(f"Response from deleting file {file.id}: {response}")
-                if response.deleted:
-                    logging.info(f"Successfully deleted file {file.id} from vector store {vector_store_id}")
+            if file['filename'] == file_name:
+                logging.info(f"Found file {file['id']} with name {file_name} in vector store {vector_store_id}")
+                delete_response = client.vector_stores.files.delete(vector_store_id=vector_store_id, file_id=file['id'])
+                logging.info(f"Response from deleting file {file['id']}: {delete_response}")
+                if delete_response['deleted']:
+                    logging.info(f"Successfully deleted file {file['id']} from vector store {vector_store_id}")
                 else:
-                    logging.error(f"Failed to delete file {file.id} from vector store {vector_store_id}")
+                    logging.error(f"Failed to delete file {file['id']} from vector store {vector_store_id}")
                 return
         logging.info(f"No file named {file_name} found in vector store {vector_store_id}")
     except Exception as e:
@@ -273,7 +274,7 @@ def main():
     commit_message = "Update cdpt_repo.json"
     commit_to_github(output_file_path, repo, branch, commit_message)
 
-    # Fetch and upload cdpt_repo_json directly from the GitHub raw URL
+    # Fetch and upload cdpt_repo.json directly from the GitHub raw URL
     fetch_and_upload_cdpt_repo_json()
 
     # Log the entire content of the scraper.log file
