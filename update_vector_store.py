@@ -168,7 +168,8 @@ def upload_to_vector_store(file_path, json_data_str):
     vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
     headers = {
         'Authorization': f'Bearer {openai_api_key}',
-        'OpenAI-Beta': 'assistants=v2'
+        'OpenAI-Beta': 'assistants=v2',
+        'Content-Type': 'application/json'
     }
     url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
     logging.info(f"Uploading {file_path} to {url}")
