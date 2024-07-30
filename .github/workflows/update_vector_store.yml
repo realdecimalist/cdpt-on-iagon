@@ -38,13 +38,20 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-    - name: Force add the file and commit
+    - name: Check for changes
+      id: git_status
       run: |
         git add -f cdpt_repo.json
+        git diff --staged --quiet || echo "changes_detected=true" >> $GITHUB_ENV
+
+    - name: Commit changes
+      if: env.changes_detected == 'true'
+      run: |
         git commit -m "Update cdpt_repo.json"
         git push -f origin temp-update-branch
 
     - name: Create a pull request
+      if: env.changes_detected == 'true'
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
