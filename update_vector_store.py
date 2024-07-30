@@ -25,6 +25,8 @@ HEADERS = {
     "Authorization": f"token {TOKEN}"
 }
 
+VECTOR_STORE_ID = "vs_tiNayixAsoF0CJZjnkgCvXse"
+
 def get_repo_contents(url):
     logging.info(f"Fetching repository contents from URL: {url}")
     try:
@@ -171,19 +173,8 @@ def upload_to_vector_store(file_path):
         logging.error("OPENAI_API_KEY is not set.")
         return
 
-    # Check if the vector store exists
-    vector_store_name = "CDPTRepoStore"
-    vector_stores = client.beta.vector_stores.list()["data"]
-    vector_store_id = None
-    for store in vector_stores:
-        if store["name"] == vector_store_name:
-            vector_store_id = store["id"]
-            break
-    
-    # If the vector store does not exist, create it
-    if not vector_store_id:
-        vector_store = client.beta.vector_stores.create(name=vector_store_name)
-        vector_store_id = vector_store["id"]
+    # Use the existing vector store ID
+    vector_store_id = VECTOR_STORE_ID
 
     # Upload the file and poll for status
     with open(file_path, "rb") as f:
