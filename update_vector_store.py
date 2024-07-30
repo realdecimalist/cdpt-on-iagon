@@ -5,7 +5,6 @@ import logging
 import chardet
 import os
 from base64 import b64encode
-import openai
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -13,7 +12,6 @@ logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(ascti
 
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
 OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
-
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
 TOKEN = os.getenv('GITHUB_TOKEN')
 HEADERS = {
@@ -241,10 +239,6 @@ def main():
     branch = "main"
     delete_previous_file(output_file_path, repo, branch)
 
-    # Commit the new file to GitHub
-    commit_message = "Add cdpt_repo.json"
-    commit_to_github(output_file_path, repo, branch, commit_message)
-
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
     # Read the updated file content
@@ -253,6 +247,10 @@ def main():
 
     # Upload to OpenAI Vector Store
     upload_to_vector_store(output_file_path, json_data_str)
+
+    # Commit the new file to GitHub
+    commit_message = "Add cdpt_repo.json"
+    commit_to_github(output_file_path, repo, branch, commit_message)
 
     # Fetch and upload cdpt_repo.json directly from the GitHub raw URL
     fetch_and_upload_cdpt_repo_json()
