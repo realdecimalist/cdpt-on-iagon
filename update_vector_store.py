@@ -219,7 +219,7 @@ def main():
     get_all_files(GITHUB_API_URL, file_list)
 
     if not file_list:
-        logging.error("Failed to retrieve file list from the GitHub repository.")
+        logging.error("No files found in the GitHub repository.")
         return
 
     updated_data = update_content(file_list)
