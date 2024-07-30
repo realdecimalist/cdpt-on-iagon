@@ -23,26 +23,28 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests chardet openai
 
-    - name: Update Vector Store
+    - name: Create a temporary branch
+      run: |
+        git checkout -b temp-update-branch
+
+    - name: Run the update script
+      run: python update_vector_store.py
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: |
-        python update_vector_store.py
 
-    - name: Commit cdpt_repo.json to repository
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    - name: Commit changes
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add cdpt_repo.json
-        if git diff --cached --exit-code cdpt_repo.json; then
-          echo "No changes to commit"
-        else
-          git commit -m "Update cdpt_repo.json"
-          git stash
-          git pull --rebase origin main || git rebase --abort
-          git stash pop
-          git push origin HEAD:main
-        fi
+        git commit -m "Update cdpt_repo.json"
+        git push origin temp-update-branch
+
+    - name: Create a pull request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: Update cdpt_repo.json
+        branch: temp-update-branch
+        title: "Update cdpt_repo.json"
+        body: "This PR updates the cdpt_repo.json file."
+        base: main

@@ -182,7 +182,7 @@ def upload_to_vector_store(file_path, json_data_str):
         return
 
     data = {
-        #'purpose': 'assistants',
+        'purpose': 'assistants',
         'file_id': os.path.basename(file_path),
         'content': json_data_str
     }
@@ -256,7 +256,7 @@ def main():
 
     # Delete the previous file from GitHub
     repo = "realdecimalist/cdpt-on-iagon"
-    branch = "main"
+    branch = "temp-update-branch"
     delete_previous_file(output_file_path, repo, branch)
 
     # Commit the new file to GitHub
