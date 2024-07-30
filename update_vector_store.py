@@ -4,8 +4,8 @@ import time
 import logging
 import chardet
 import os
-from base64 import b64encode
 from openai import OpenAI
+from base64 import b64encode
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -13,11 +13,8 @@ logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(ascti
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler())  # Add this to log to stdout
 
-# Set the OpenAI API key
-openai_api_key = os.getenv('OPENAI_API_KEY')
-client = OpenAI(api_key=openai_api_key)
-
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
+VECTOR_STORE_ID = "vs_tiNayixAsoF0CJZjnkgCvXse"
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
 TOKEN = os.getenv('GITHUB_TOKEN')
 HEADERS = {
@@ -25,7 +22,9 @@ HEADERS = {
     "Authorization": f"token {TOKEN}"
 }
 
-VECTOR_STORE_ID = "vs_tiNayixAsoF0CJZjnkgCvXse"
+# Set the OpenAI API key
+openai_api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=openai_api_key)
 
 def get_repo_contents(url):
     logging.info(f"Fetching repository contents from URL: {url}")
@@ -167,19 +166,46 @@ def delete_previous_file(file_path, repo, branch):
     else:
         logging.info(f"No previous {file_path} found in {repo} on branch {branch}")
 
+def delete_existing_vector_store_file(vector_store_id, file_name):
+    """Delete the existing file from the vector store."""
+    logging.info(f"Listing files in vector store {vector_store_id}")
+    vector_store_files = client.vector_stores.get(vector_store_id).files()
+    for file in vector_store_files:
+        if file.filename == file_name:
+            logging.info(f"Deleting file {file.id} from vector store {vector_store_id}")
+            client.vector_stores.files.delete(vector_store_id, file.id)
+            logging.info(f"Successfully deleted file {file.id} from vector store {vector_store_id}")
+            return
+    logging.info(f"No file named {file_name} found in vector store {vector_store_id}")
+
 def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
+    openai_api_key = os.getenv('OPENAI_API_KEY')
     if not openai_api_key:
         logging.error("OPENAI_API_KEY is not set.")
         return
 
-    # Use the existing vector store ID
-    vector_store_id = VECTOR_STORE_ID
+    headers = {
+        'Authorization': f'Bearer {openai_api_key}',
+        'OpenAI-Beta': 'assistants=v2',
+        'Content-Type': 'application/json'
+    }
+    url = f'https://api.openai.com/v1/vector_stores/{VECTOR_STORE_ID}/files'
+    logging.info(f"Uploading {file_path} to {url}")
 
-    # Upload the file and poll for status
+    with open(file_path, 'r', encoding='utf-8') as file:
+        json_data_str = file.read()
+
+    if not validate_json(json_data_str):
+        logging.error("JSON validation failed. Aborting upload.")
+        return
+
+    # Log the file content for debugging
+    logging.info(f"Updated JSON data: {json_data_str[:500]}...")  # Log only the first 500 characters
+
     with open(file_path, "rb") as f:
         file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
-            vector_store_id=vector_store_id, files=[f]
+            vector_store_id=VECTOR_STORE_ID, files=[f]
         )
     
     # Print the status and the file counts
@@ -226,15 +252,8 @@ def main():
         logging.error(f"{output_file_path} does not exist.")
         return
 
-    # Log the file content for debugging
-    with open(output_file_path, 'r', encoding='utf-8') as file:
-        json_data_str = file.read()
-        logging.info(f"Updated JSON data: {json_data_str[:500]}...")  # Log only the first 500 characters
-
-    # Validate JSON before proceeding
-    if not validate_json(json_data_str):
-        logging.error("Updated JSON data is invalid. Aborting.")
-        return
+    # Delete existing file from vector store
+    delete_existing_vector_store_file(VECTOR_STORE_ID, os.path.basename(output_file_path))
 
     # Upload to OpenAI Vector Store
     logging.info("Uploading the updated JSON data to the OpenAI Vector Store")
