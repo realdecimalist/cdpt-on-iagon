@@ -9,6 +9,8 @@ from base64 import b64encode
 # Configure logging
 log_file_path = 'scraper.log'
 logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
+logger.addHandler(logging.StreamHandler())  # Add this to log to stdout
 
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
 OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
@@ -89,14 +91,12 @@ def update_content(url_list):
 
         time.sleep(1)  # Respectful delay to avoid hitting server too hard
 
-    # Ensure scraper.log is not included 
+    # Ensure scraper.log is not included
     scraper_log_url = 'https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/scraper.log'
     if scraper_log_url in data:
         del data[scraper_log_url]
 
     return data
-
-
 
 def validate_json(json_data_str):
     """Validate JSON data and log specific invalid characters."""
@@ -181,18 +181,7 @@ def upload_to_vector_store(file_path, json_data_str):
         logging.error("JSON validation failed. Aborting upload.")
         return
 
-    with open(file_path, 'rb') as f:
-        files = {
-            'file': (os.path.basename(file_path), f, 'application/json')
-        }
-        data = {
-            'purpose': 'assistants',
-            'file_id': os.path.basename(file_path),
-            'content': json_data_str
-        }
-
-        response = requests.post(url, headers=headers, files=files, data=data)
-
+    response = requests.post(url, headers=headers, data=json_data_str)
     if response.status_code == 200:
         logging.info("Successfully updated the vector store.")
     else:
@@ -252,6 +241,7 @@ def main():
         return
 
     # Upload to OpenAI Vector Store
+    logging.info("Uploading the updated JSON data to the OpenAI Vector Store")
     upload_to_vector_store(output_file_path, json_data_str)
 
     # Delete the previous file from GitHub
