@@ -167,6 +167,19 @@ def delete_previous_file(file_path, repo, branch):
     else:
         logging.info(f"No previous {file_path} found in {repo} on branch {branch}")
 
+def delete_existing_vector_store_file(vector_store_id, file_name):
+    """Delete the existing file from the vector store."""
+    logging.info(f"Listing files in vector store {vector_store_id}")
+    vector_store_files = client.vector_stores.get(vector_store_id).files()
+    for file in vector_store_files:
+        if file.filename == file_name:
+            logging.info(f"Deleting file {file.id} from vector store {vector_store_id}")
+            client.vector_stores.files.delete(vector_store_id, file.id)
+            logging.info(f"Successfully deleted file {file.id} from vector store {vector_store_id}")
+            return
+    logging.info(f"No file named {file_name} found in vector store {vector_store_id}")
+
+
 def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
     if not openai_api_key:
