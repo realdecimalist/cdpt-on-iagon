@@ -89,6 +89,10 @@ def update_content(url_list):
 
         time.sleep(1)  # Respectful delay to avoid hitting server too hard
 
+          # Ensure scraper.log is not included
+        if 'scraper.log' in data:
+            del data['scraper.log']
+
     return data
 
 def validate_json(json_data_str):
