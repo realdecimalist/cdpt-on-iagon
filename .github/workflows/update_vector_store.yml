@@ -38,9 +38,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-    - name: Commit changes
+    - name: Force add the file and commit
       run: |
-        git add cdpt_repo.json
+        git add -f cdpt_repo.json
         git commit -m "Update cdpt_repo.json"
         git push origin temp-update-branch
 

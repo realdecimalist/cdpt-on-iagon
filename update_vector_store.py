@@ -241,9 +241,10 @@ def main():
         logging.error(f"{output_file_path} does not exist.")
         return
 
-    # Read the updated file content
+    # Log the file content for debugging
     with open(output_file_path, 'r', encoding='utf-8') as file:
         json_data_str = file.read()
+        logging.info(f"Updated JSON data: {json_data_str[:500]}...")  # Log only the first 500 characters
 
     # Validate JSON before proceeding
     if not validate_json(json_data_str):
