@@ -247,8 +247,12 @@ def main():
 
     logging.info(f"{output_file_path} exists. Proceeding to upload to OpenAI Vector Store")
 
+    # Read the updated file content
+    with open(output_file_path, 'r', encoding='utf-8') as file:
+        json_data_str = file.read()
+
     # Upload to OpenAI Vector Store
-    upload_to_vector_store(output_file_path)
+    upload_to_vector_store(output_file_path, json_data_str)
 
     # Fetch and upload cdpt_repo.json directly from the GitHub raw URL
     fetch_and_upload_cdpt_repo_json()
