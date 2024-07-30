@@ -42,7 +42,7 @@ jobs:
       run: |
         git add -f cdpt_repo.json
         git commit -m "Update cdpt_repo.json"
-        git push origin temp-update-branch
+        git push -f origin temp-update-branch
 
     - name: Create a pull request
       uses: peter-evans/create-pull-request@v3

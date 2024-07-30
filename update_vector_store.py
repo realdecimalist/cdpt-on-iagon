@@ -5,6 +5,7 @@ import logging
 import chardet
 import os
 from base64 import b64encode
+import openai  # Make sure to install the OpenAI Python package
 
 # Configure logging
 log_file_path = 'scraper.log'
@@ -12,8 +13,10 @@ logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(ascti
 logger = logging.getLogger()
 logger.addHandler(logging.StreamHandler())  # Add this to log to stdout
 
+# Set the OpenAI API key
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 GITHUB_RAW_URL = "https://raw.githubusercontent.com/realdecimalist/cdpt-on-iagon/main/cdpt_repo.json"
-OPENAI_API_URL = "https://api.openai.com/v1/vector_stores/vs_tiNayixAsoF0CJZjnkgCvXse/files"
 GITHUB_API_URL = "https://api.github.com/repos/realdecimalist/cdpt-on-iagon/contents/"
 TOKEN = os.getenv('GITHUB_TOKEN')
 HEADERS = {
@@ -161,44 +164,36 @@ def delete_previous_file(file_path, repo, branch):
     else:
         logging.info(f"No previous {file_path} found in {repo} on branch {branch}")
 
-def upload_to_vector_store(file_path, json_data_str):
+def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
     openai_api_key = os.getenv('OPENAI_API_KEY')
     if not openai_api_key:
         logging.error("OPENAI_API_KEY is not set.")
         return
 
-    vector_store_id = 'vs_tiNayixAsoF0CJZjnkgCvXse'
-    headers = {
-        'Authorization': f'Bearer {openai_api_key}',
-        'OpenAI-Beta': 'assistants=v2',
-        'Content-Type': 'application/json'
-    }
-    url = f'https://api.openai.com/v1/vector_stores/{vector_store_id}/files'
-    logging.info(f"Uploading {file_path} to {url}")
+    # Check if the vector store exists
+    vector_store_name = "CDPTRepoStore"
+    vector_stores = openai.vector_stores.list()["data"]
+    vector_store_id = None
+    for store in vector_stores:
+        if store["name"] == vector_store_name:
+            vector_store_id = store["id"]
+            break
+    
+    # If the vector store does not exist, create it
+    if not vector_store_id:
+        vector_store = openai.vector_stores.create(name=vector_store_name)
+        vector_store_id = vector_store["id"]
 
-    if not validate_json(json_data_str):
-        logging.error("JSON validation failed. Aborting upload.")
-        return
-
-    data = {
-        'file_id': os.path.basename(file_path),
-        'content': json_data_str
-    }
-
-    logging.debug(f"Payload data: {json.dumps(data, indent=4)}")
-
-    response = requests.post(url, headers=headers, json=data)
-
-    if response.status_code == 200:
-        logging.info("Successfully updated the vector store.")
-    else:
-        logging.error(f"Failed to update the vector store: {response.text}")
-        logging.debug(f"Response status code: {response.status_code}")
-        logging.debug(f"Response headers: {response.headers}")
-        logging.debug(f"Response content: {response.content}")
-
-
+    # Upload the file and poll for status
+    with open(file_path, "rb") as f:
+        file_batch = openai.vector_stores.file_batches.upload_and_poll(
+            vector_store_id=vector_store_id, files=[f]
+        )
+    
+    # Print the status and file counts
+    logging.info(f"File batch status: {file_batch.status}")
+    logging.info(f"File counts: {file_batch.file_counts}")
 
 def fetch_and_upload_cdpt_repo_json():
     logging.info("Fetching cdpt_repo.json from GitHub raw URL")
@@ -216,9 +211,8 @@ def fetch_and_upload_cdpt_repo_json():
     with open(file_path, 'wb') as f:
         f.write(file_content)
 
-    # Now call the upload function with the local file path and JSON data string
-    json_data_str = file_content.decode('utf-8')
-    upload_to_vector_store(file_path, json_data_str)
+    # Now call the upload function with the local file path
+    upload_to_vector_store(file_path)
 
 def main():
     logging.info("Starting main function")
@@ -253,7 +247,7 @@ def main():
 
     # Upload to OpenAI Vector Store
     logging.info("Uploading the updated JSON data to the OpenAI Vector Store")
-    upload_to_vector_store(output_file_path, json_data_str)
+    upload_to_vector_store(output_file_path)
 
     # Delete the previous file from GitHub
     repo = "realdecimalist/cdpt-on-iagon"
