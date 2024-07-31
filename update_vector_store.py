@@ -167,7 +167,22 @@ def delete_previous_file(file_path, repo, branch):
     else:
         logging.info(f"No previous {file_path} found in {repo} on branch {branch}")
 
-def delete_existing_vector_store_file(vector_store_id, file_name):
+def get_file_id_by_filename(file_name):
+    """Retrieve the file ID using the filename."""
+    logging.info(f"Retrieving file ID for filename: {file_name}")
+    try:
+        files = client.files.list()
+        for file in files:
+            if file.filename == file_name:
+                logging.info(f"Found file {file.id} with name {file_name}")
+                return file.id
+        logging.info(f"No file named {file_name} found")
+        return None
+    except Exception as e:
+        logging.error(f"Error while retrieving file ID for {file_name}: {e}")
+        return None
+
+def delete_existing_vector_store_file(vector_store_id, file_id):
     """Delete the existing file from the vector store."""
     logging.info(f"Listing files in vector store {vector_store_id}")
     try:
@@ -176,8 +191,8 @@ def delete_existing_vector_store_file(vector_store_id, file_name):
         
         for file in vector_store_files:
             logging.info(f"Checking file: {file}")
-            if file.filename == file_name:
-                logging.info(f"Found file {file.id} with name {file_name} in vector store {vector_store_id}")
+            if file.id == file_id:
+                logging.info(f"Found file {file.id} in vector store {vector_store_id}")
                 delete_response = client.beta.vector_stores.files.delete(vector_store_id=vector_store_id, file_id=file.id)
                 logging.info(f"Response from deleting file {file.id}: {delete_response}")
                 if delete_response.deleted:
@@ -187,10 +202,9 @@ def delete_existing_vector_store_file(vector_store_id, file_name):
                 else:
                     logging.error(f"Failed to delete file {file.id} from vector store {vector_store_id}")
                 return
-        logging.info(f"No file named {file_name} found in vector store {vector_store_id}")
+        logging.info(f"No file with ID {file_id} found in vector store {vector_store_id}")
     except Exception as e:
-        logging.error(f"Error while deleting file {file_name} from vector store {vector_store_id}: {e}")
-
+        logging.error(f"Error while deleting file with ID {file_id} from vector store {vector_store_id}: {e}")
 
 def delete_file(file_id):
     """Delete the file itself from the OpenAI files endpoint."""
@@ -198,7 +212,7 @@ def delete_file(file_id):
         logging.info(f"Deleting file {file_id} from OpenAI files endpoint")
         delete_response = client.files.delete(file_id)
         logging.info(f"Response from deleting file {file_id}: {delete_response}")
-        if delete_response['deleted']:
+        if delete_response.deleted:
             logging.info(f"Successfully deleted file {file_id}")
         else:
             logging.error(f"Failed to delete file {file_id}")
