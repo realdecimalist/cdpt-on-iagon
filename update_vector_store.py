@@ -182,12 +182,27 @@ def delete_existing_vector_store_file(vector_store_id, file_name):
                 logging.info(f"Response from deleting file {file['id']}: {delete_response}")
                 if delete_response['deleted']:
                     logging.info(f"Successfully deleted file {file['id']} from vector store {vector_store_id}")
+                    # Now delete the file itself
+                    delete_file(file['id'])
                 else:
                     logging.error(f"Failed to delete file {file['id']} from vector store {vector_store_id}")
                 return
         logging.info(f"No file named {file_name} found in vector store {vector_store_id}")
     except Exception as e:
         logging.error(f"Error while deleting file {file_name} from vector store {vector_store_id}: {e}")
+
+def delete_file(file_id):
+    """Delete the file itself from the OpenAI files endpoint."""
+    try:
+        logging.info(f"Deleting file {file_id} from OpenAI files endpoint")
+        delete_response = client.files.delete(file_id)
+        logging.info(f"Response from deleting file {file_id}: {delete_response}")
+        if delete_response['deleted']:
+            logging.info(f"Successfully deleted file {file_id}")
+        else:
+            logging.error(f"Failed to delete file {file_id}")
+    except Exception as e:
+        logging.error(f"Error while deleting file {file_id} from OpenAI files endpoint: {e}")
 
 def upload_to_vector_store(file_path):
     """Upload the JSON file to the OpenAI vector store."""
