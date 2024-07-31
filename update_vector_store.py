@@ -171,11 +171,11 @@ def delete_existing_vector_store_file(vector_store_id, file_name):
     """Delete the existing file from the vector store."""
     try:
         logging.info(f"Listing files in vector store {vector_store_id}")
-        response = client.beta.vector_stores.files.list(vector_store_id=vector_store_id)
-        vector_store_files = response["data"]
-        logging.info(f"Retrieved files from vector store {vector_store_id}: {vector_store_files}")
+        vector_store_files = client.beta.vector_stores.files.list(vector_store_id=vector_store_id)
+        logging.info(f"Retrieved files from vector store {vector_store_id}")
 
         for file in vector_store_files:
+            logging.info(f"Checking file: {file}")
             if file['filename'] == file_name:
                 logging.info(f"Found file {file['id']} with name {file_name} in vector store {vector_store_id}")
                 delete_response = client.beta.vector_stores.files.delete(vector_store_id=vector_store_id, file_id=file['id'])
